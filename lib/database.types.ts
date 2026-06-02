@@ -367,6 +367,23 @@ export type Database = {
     }
     Functions: {
       is_admin: { Args: never; Returns: boolean }
+      place_match_bet: {
+        Args: {
+          p_fixture_id: number
+          p_predicted_home: number
+          p_predicted_away: number
+        }
+        Returns: {
+          id: number
+          user_id: string
+          fixture_id: number
+          predicted_home: number
+          predicted_away: number
+          points_awarded: number
+          created_at: string
+          updated_at: string
+        }
+      }
       registration_locked: { Args: never; Returns: boolean }
     }
     Enums: {

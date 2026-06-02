@@ -1,0 +1,219 @@
+'use client'
+import { useEffect, useState, useTransition } from 'react'
+import { useTranslations } from 'next-intl'
+import { placeBet } from '@/lib/bets/actions'
+import { LockCountdown } from './LockCountdown'
+import { Button } from '@/components/ui/button'
+
+export type Team = {
+  id: number
+  name: string
+  flag_url: string | null
+}
+
+export type FixtureWithTeams = {
+  id: number
+  stage: string
+  kickoff_at: string
+  lock_at: string
+  status: string
+  home_score: number | null
+  away_score: number | null
+  home_team: Team | null
+  away_team: Team | null
+}
+
+export type UserBet = {
+  fixture_id: number
+  predicted_home: number
+  predicted_away: number
+}
+
+export function FixtureCard({
+  fixture,
+  existingBet,
+}: {
+  fixture: FixtureWithTeams
+  existingBet: UserBet | null
+}) {
+  const tb = useTranslations('bets')
+
+  const [isLocked, setIsLocked] = useState(
+    () => new Date() >= new Date(fixture.lock_at),
+  )
+  const [home, setHome] = useState(
+    existingBet != null ? String(existingBet.predicted_home) : '',
+  )
+  const [away, setAway] = useState(
+    existingBet != null ? String(existingBet.predicted_away) : '',
+  )
+  const [savedBet, setSavedBet] = useState<{ home: number; away: number } | null>(
+    existingBet != null
+      ? { home: existingBet.predicted_home, away: existingBet.predicted_away }
+      : null,
+  )
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'error-locked' | 'error'>('idle')
+  const [isPending, startTransition] = useTransition()
+
+  useEffect(() => {
+    const delay = Math.max(0, new Date(fixture.lock_at).getTime() - Date.now())
+    const id = setTimeout(() => setIsLocked(true), delay)
+    return () => clearTimeout(id)
+  }, [fixture.lock_at])
+
+  const handleSave = () => {
+    const h = parseInt(home, 10)
+    const a = parseInt(away, 10)
+    if (isNaN(h) || isNaN(a) || h < 0 || a < 0) return
+
+    startTransition(async () => {
+      const result = await placeBet(fixture.id, h, a)
+      if (result.success) {
+        setSavedBet({ home: h, away: a })
+        setSaveStatus('saved')
+        setTimeout(() => setSaveStatus('idle'), 2500)
+      } else {
+        setSaveStatus(result.error === 'locked' ? 'error-locked' : 'error')
+        if (result.error === 'locked') setIsLocked(true)
+      }
+    })
+  }
+
+  const isSaving = isPending
+  const homeTeam = fixture.home_team
+  const awayTeam = fixture.away_team
+  const kickoff = new Date(fixture.kickoff_at)
+
+  const currentBet = savedBet
+
+  return (
+    <div className="rounded-xl border bg-card p-4 flex flex-col gap-3 shadow-sm">
+      {/* Teams + score row */}
+      <div className="flex items-center gap-3">
+        {/* Home team */}
+        <div className="flex flex-col items-center gap-1 min-w-0 flex-1">
+          {homeTeam?.flag_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={homeTeam.flag_url}
+              alt=""
+              width={36}
+              height={27}
+              className="rounded object-cover"
+            />
+          )}
+          <span className="text-xs font-medium text-center leading-tight line-clamp-2 w-full">
+            {homeTeam?.name ?? <span className="text-muted-foreground">TBD</span>}
+          </span>
+        </div>
+
+        {/* Score inputs or display */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          {isLocked ? (
+            <div className="flex items-center gap-1 text-xl font-bold tabular-nums">
+              {currentBet != null ? (
+                <>
+                  <span>{currentBet.home}</span>
+                  <span className="text-muted-foreground text-base">–</span>
+                  <span>{currentBet.away}</span>
+                </>
+              ) : (
+                <span className="text-sm font-normal text-muted-foreground">
+                  {tb('noBet')}
+                </span>
+              )}
+            </div>
+          ) : (
+            <>
+              <input
+                type="number"
+                min={0}
+                max={20}
+                value={home}
+                onChange={(e) => {
+                  setHome(e.target.value)
+                  setSaveStatus('idle')
+                }}
+                disabled={isSaving}
+                aria-label="Home score"
+                className="w-11 h-11 text-center text-xl font-bold rounded-lg border bg-background tabular-nums focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+              />
+              <span className="text-muted-foreground font-bold">–</span>
+              <input
+                type="number"
+                min={0}
+                max={20}
+                value={away}
+                onChange={(e) => {
+                  setAway(e.target.value)
+                  setSaveStatus('idle')
+                }}
+                disabled={isSaving}
+                aria-label="Away score"
+                className="w-11 h-11 text-center text-xl font-bold rounded-lg border bg-background tabular-nums focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+              />
+            </>
+          )}
+        </div>
+
+        {/* Away team */}
+        <div className="flex flex-col items-center gap-1 min-w-0 flex-1">
+          {awayTeam?.flag_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={awayTeam.flag_url}
+              alt=""
+              width={36}
+              height={27}
+              className="rounded object-cover"
+            />
+          )}
+          <span className="text-xs font-medium text-center leading-tight line-clamp-2 w-full">
+            {awayTeam?.name ?? <span className="text-muted-foreground">TBD</span>}
+          </span>
+        </div>
+      </div>
+
+      {/* Kickoff + lock status row */}
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <span>
+          {kickoff.toLocaleString(undefined, {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </span>
+        {isLocked ? (
+          <span className="text-xs font-medium text-muted-foreground">{tb('locked')}</span>
+        ) : (
+          <LockCountdown lockAt={fixture.lock_at} />
+        )}
+      </div>
+
+      {/* Save button + error (only when unlocked) */}
+      {!isLocked && (
+        <div className="flex flex-col gap-1">
+          <Button
+            onClick={handleSave}
+            disabled={isSaving || home === '' || away === ''}
+            size="sm"
+            className="w-full"
+            variant={saveStatus === 'saved' ? 'outline' : 'default'}
+          >
+            {isSaving
+              ? tb('saving')
+              : saveStatus === 'saved'
+                ? tb('saved')
+                : tb('placeBet')}
+          </Button>
+          {(saveStatus === 'error-locked' || saveStatus === 'error') && (
+            <p className="text-xs text-destructive text-center">
+              {saveStatus === 'error-locked' ? tb('errorLocked') : tb('errorSave')}
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}

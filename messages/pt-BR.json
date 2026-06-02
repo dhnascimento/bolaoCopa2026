@@ -1,13 +1,44 @@
 {
   "common": { "appName": "Bolão da Copa 2026", "potTotal": "Prêmio total" },
-  "auth": { "signIn": "Entrar", "signUp": "Criar conta", "signOut": "Sair" },
+  "auth": {
+    "signIn": "Entrar",
+    "signUp": "Criar conta",
+    "signOut": "Sair",
+    "email": "Email",
+    "password": "Senha",
+    "signingIn": "Entrando...",
+    "signInError": "Email ou senha incorretos.",
+    "signInTitle": "Entre na sua conta"
+  },
   "bets": {
-    "placeBet": "Apostar",
+    "placeBet": "Salvar aposta",
     "editBet": "Editar aposta",
-    "locked": "Apostas encerradas",
+    "locked": "Encerrado",
     "champion": "Campeão",
-    "topScorer": "Artilheiro"
+    "topScorer": "Artilheiro",
+    "saving": "Salvando...",
+    "saved": "Salvo!",
+    "noBet": "Sem aposta",
+    "yourBet": "Sua aposta",
+    "errorLocked": "Apostas para este jogo já encerraram.",
+    "errorSave": "Não foi possível salvar. Tente novamente."
+  },
+  "fixtures": {
+    "title": "Jogos",
+    "noFixtures": "Nenhum jogo encontrado.",
+    "locksIn": "Fecha em {time}",
+    "tbd": "A definir",
+    "stages": {
+      "group": "Fase de Grupos",
+      "r32": "Rodada de 32",
+      "r16": "Oitavas de Final",
+      "qf": "Quartas de Final",
+      "sf": "Semifinais",
+      "3rd": "Disputa do 3º Lugar",
+      "final": "Final"
+    }
   },
   "leaderboard": { "title": "Classificação", "points": "Pontos" },
+  "nav": { "fixtures": "Jogos", "leaderboard": "Classificação" },
   "payment": { "iPaid": "Confirmo que paguei", "confirmed": "Pagamento confirmado" }
 }
