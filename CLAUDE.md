@@ -48,8 +48,8 @@ Read `docs/SPEC.md §10` for the full day-by-day plan. Current status:
 | Day | Theme | Status |
 |-----|-------|--------|
 | 1 | Foundation — scaffold, schema, i18n, Supabase linked | ✅ Done (commit 8daa703) |
-| 2 | Data sync — Edge Function + cron → teams, players, fixtures | ⬜ Next |
-| 3 | Betting — fixtures list, place/edit match bets, lock RPC | ⬜ |
+| 2 | Data sync — Edge Function + cron → teams, players, fixtures | ✅ Done |
+| 3 | Betting — fixtures list, place/edit match bets, lock RPC | ⬜ Next |
 | 4 | Scoring — finished-fixture polling, idempotent points, admin config | ⬜ |
 | 5 | Leaderboard & outrights — realtime, pot total, champion/top-scorer bets | ⬜ |
 | 6 | Payments & admin — self-confirm, admin roster, registration lock | ⬜ |

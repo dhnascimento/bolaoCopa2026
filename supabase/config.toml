@@ -371,6 +371,12 @@ authorization_url_path = "/oauth/consent"
 # Allow dynamic client registration
 allow_dynamic_registration = false
 
+[functions.sync-fixtures]
+# JWT verification is disabled so pg_cron can call this function without a
+# user JWT.  The function enforces its own CRON_SECRET check when that env
+# var is set via `supabase secrets set CRON_SECRET=<value>`.
+verify_jwt = false
+
 [edge_runtime]
 enabled = true
 # Supported request policies: `oneshot`, `per_worker`.
