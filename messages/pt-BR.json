@@ -8,7 +8,10 @@
     "password": "Senha",
     "signingIn": "Entrando...",
     "signInError": "Email ou senha incorretos.",
-    "signInTitle": "Entre na sua conta"
+    "signInTitle": "Entre na sua conta",
+    "orDivider": "ou",
+    "continueWithGoogle": "Continuar com Google",
+    "continueWithMicrosoft": "Continuar com Microsoft"
   },
   "bets": {
     "placeBet": "Salvar aposta",
