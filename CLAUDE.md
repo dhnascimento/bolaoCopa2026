@@ -41,3 +41,21 @@ Regulation (90-minute) result only. Correct result **3** · exact score bonus **
 - `.claude/skills/` holds the project workflows (migrations, i18n, scoring, API-Football). They auto-apply when relevant or run as `/name`.
 - `.claude/agents/reviewer` is a read-only checker — run it after a feature and before a PR.
 - These files are committed so every collaborator's Claude Code inherits the same rules.
+
+## Build progress
+Read `docs/SPEC.md §10` for the full day-by-day plan. Current status:
+
+| Day | Theme | Status |
+|-----|-------|--------|
+| 1 | Foundation — scaffold, schema, i18n, Supabase linked | ✅ Done (commit 8daa703) |
+| 2 | Data sync — Edge Function + cron → teams, players, fixtures | ⬜ Next |
+| 3 | Betting — fixtures list, place/edit match bets, lock RPC | ⬜ |
+| 4 | Scoring — finished-fixture polling, idempotent points, admin config | ⬜ |
+| 5 | Leaderboard & outrights — realtime, pot total, champion/top-scorer bets | ⬜ |
+| 6 | Payments & admin — self-confirm, admin roster, registration lock | ⬜ |
+| 7 | Reminders, odds, polish — Resend email, odds display, full i18n pass | ⬜ |
+| 8 | Buffer — test, deploy to Vercel, onboard users | ⬜ |
+
+**Target:** users playable by June 8, onboarded by June 10, tournament starts June 11.
+
+**One non-obvious constraint from Day 1:** `lock_at` is trigger-computed (not a generated column — Postgres 17 rejects timestamptz arithmetic there). The sync job must write `kickoff_at` only; never write `lock_at` directly.
