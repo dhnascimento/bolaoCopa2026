@@ -1,0 +1,13 @@
+{
+  "common": { "appName": "Bolão da Copa 2026", "potTotal": "Prêmio total" },
+  "auth": { "signIn": "Entrar", "signUp": "Criar conta", "signOut": "Sair" },
+  "bets": {
+    "placeBet": "Apostar",
+    "editBet": "Editar aposta",
+    "locked": "Apostas encerradas",
+    "champion": "Campeão",
+    "topScorer": "Artilheiro"
+  },
+  "leaderboard": { "title": "Classificação", "points": "Pontos" },
+  "payment": { "iPaid": "Confirmo que paguei", "confirmed": "Pagamento confirmado" }
+}

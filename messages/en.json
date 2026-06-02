@@ -1,0 +1,13 @@
+{
+  "common": { "appName": "World Cup 2026 Pool", "potTotal": "Total pot" },
+  "auth": { "signIn": "Sign in", "signUp": "Sign up", "signOut": "Sign out" },
+  "bets": {
+    "placeBet": "Place bet",
+    "editBet": "Edit bet",
+    "locked": "Betting closed",
+    "champion": "Champion",
+    "topScorer": "Top scorer"
+  },
+  "leaderboard": { "title": "Leaderboard", "points": "Points" },
+  "payment": { "iPaid": "I confirm I paid", "confirmed": "Payment confirmed" }
+}
