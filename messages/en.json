@@ -68,9 +68,18 @@
     "noTeams": "No teams loaded yet."
   },
   "nav": { "fixtures": "Fixtures", "leaderboard": "Leaderboard", "outrights": "Outrights" },
-  "payment": { "iPaid": "I confirm I paid", "confirmed": "Payment confirmed" },
+  "payment": {
+    "bannerTitle": "Payment pending",
+    "bannerDesc": "Please confirm you've paid the entry fee to participate in scoring.",
+    "confirmButton": "I confirm I paid",
+    "confirming": "Confirming...",
+    "iPaid": "I confirm I paid",
+    "confirmed": "Payment confirmed"
+  },
   "admin": {
     "title": "Admin",
+    "navScoring": "Scoring",
+    "navRoster": "Roster",
     "scoringConfig": "Scoring Config",
     "pointsCorrectResult": "Correct result (pts)",
     "pointsExactBonus": "Exact score bonus (pts)",
@@ -86,6 +95,27 @@
     "rescoring": "Re-scoring...",
     "rescored": "{count} bets re-scored.",
     "rescoreError": "Re-score failed. Please try again.",
-    "notAdmin": "You do not have permission to view this page."
+    "notAdmin": "You do not have permission to view this page.",
+    "registrationLock": "Registration Lock",
+    "lockStatusLocked": "Locked",
+    "lockStatusOpen": "Open",
+    "lockDateTime": "Lock date & time",
+    "setLock": "Set lock",
+    "lockNow": "Lock now",
+    "removeLock": "Remove lock",
+    "lockSaved": "Lock updated.",
+    "lockError": "Could not update lock. Please try again.",
+    "rosterEmpty": "No users found.",
+    "rosterName": "Name",
+    "rosterSelfConfirmed": "Self-confirmed",
+    "rosterPaymentStatus": "Payment",
+    "rosterActions": "Actions",
+    "confirmPayment": "Confirm",
+    "revertPayment": "Revert",
+    "paymentStatus": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "rejected": "Rejected"
+    }
   }
 }

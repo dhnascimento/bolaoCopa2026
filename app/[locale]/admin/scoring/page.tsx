@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import ScoringConfigForm from '@/components/admin/ScoringConfigForm'
+import AdminNav from '@/components/admin/AdminNav'
+import RegistrationLockForm from '@/components/admin/RegistrationLockForm'
 import type { ScoringConfig } from '@/lib/admin/actions'
 
 export default async function AdminScoringPage({
@@ -35,6 +37,11 @@ export default async function AdminScoringPage({
 
   const { data: settings } = await supabase.from('settings').select('*').single()
 
+  const registrationLockedAt = settings?.registration_locked_at ?? null
+  const registrationIsLocked =
+    !!registrationLockedAt &&
+    new Date(registrationLockedAt).getTime() <= new Date().getTime()
+
   const initialConfig: ScoringConfig = {
     points_correct_result: settings?.points_correct_result ?? 3,
     points_exact_score_bonus: settings?.points_exact_score_bonus ?? 5,
@@ -45,8 +52,13 @@ export default async function AdminScoringPage({
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-10 space-y-6">
+    <main className="mx-auto max-w-2xl px-4 py-8 space-y-6">
       <h1 className="text-2xl font-bold">{t('title')}</h1>
+      <AdminNav locale={locale} />
+      <RegistrationLockForm
+        currentLockedAt={registrationLockedAt}
+        isLocked={registrationIsLocked}
+      />
       <ScoringConfigForm initialConfig={initialConfig} />
     </main>
   )

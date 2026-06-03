@@ -1,4 +1,5 @@
 'use server'
+import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 
@@ -42,6 +43,41 @@ export async function updateScoringConfig(config: ScoringConfig): Promise<Action
     .eq('id', 1)
 
   if (error) return { success: false, error: error.message }
+  return { success: true }
+}
+
+export async function setPaymentStatus(
+  userId: string,
+  status: 'pending' | 'confirmed' | 'rejected',
+): Promise<ActionResult> {
+  const userClient = await createClient()
+  const { data: profile } = await userClient.from('profiles').select('is_admin').single()
+  if (!profile?.is_admin) return { success: false, error: 'unauthorized' }
+
+  const admin = createAdminClient()
+  const { error } = await admin
+    .from('profiles')
+    .update({ payment_admin_status: status })
+    .eq('id', userId)
+
+  if (error) return { success: false, error: error.message }
+  revalidatePath('/', 'layout')
+  return { success: true }
+}
+
+export async function setRegistrationLock(lockedAt: string | null): Promise<ActionResult> {
+  const userClient = await createClient()
+  const { data: profile } = await userClient.from('profiles').select('is_admin').single()
+  if (!profile?.is_admin) return { success: false, error: 'unauthorized' }
+
+  const admin = createAdminClient()
+  const { error } = await admin
+    .from('settings')
+    .update({ registration_locked_at: lockedAt, updated_at: new Date().toISOString() })
+    .eq('id', 1)
+
+  if (error) return { success: false, error: error.message }
+  revalidatePath('/', 'layout')
   return { success: true }
 }
 

@@ -6,6 +6,7 @@ import {
   type FixtureWithTeams,
   type UserBet,
 } from '@/components/fixtures/FixtureCard'
+import PaymentBanner from '@/components/fixtures/PaymentBanner'
 
 const STAGE_ORDER: Record<string, number> = {
   group: 0,
@@ -33,7 +34,7 @@ export default async function FixturesPage({
   } = await supabase.auth.getUser()
   if (!user) redirect(`/${locale}/auth/sign-in`)
 
-  const [{ data: fixtures }, { data: bets }] = await Promise.all([
+  const [{ data: fixtures }, { data: bets }, { data: profile }] = await Promise.all([
     supabase
       .from('fixtures')
       .select(
@@ -46,7 +47,14 @@ export default async function FixturesPage({
       .from('match_bets')
       .select('fixture_id, predicted_home, predicted_away')
       .eq('user_id', user.id),
+    supabase
+      .from('profiles')
+      .select('payment_self_confirmed_at')
+      .eq('id', user.id)
+      .single(),
   ])
+
+  const needsPaymentBanner = !profile?.payment_self_confirmed_at
 
   const t = await getTranslations('fixtures')
 
@@ -75,6 +83,8 @@ export default async function FixturesPage({
   return (
     <div className="mx-auto max-w-2xl px-4 py-6 flex flex-col gap-8">
       <h1 className="text-2xl font-bold">{t('title')}</h1>
+
+      {needsPaymentBanner && <PaymentBanner />}
 
       {stages.length === 0 && (
         <p className="text-muted-foreground">{t('noFixtures')}</p>

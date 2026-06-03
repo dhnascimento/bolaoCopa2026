@@ -68,9 +68,18 @@
     "noTeams": "Nenhum time carregado."
   },
   "nav": { "fixtures": "Jogos", "leaderboard": "Classificação", "outrights": "Apostas Fixas" },
-  "payment": { "iPaid": "Confirmo que paguei", "confirmed": "Pagamento confirmado" },
+  "payment": {
+    "bannerTitle": "Pagamento pendente",
+    "bannerDesc": "Confirme que você pagou a taxa de inscrição para participar da pontuação.",
+    "confirmButton": "Confirmo que paguei",
+    "confirming": "Confirmando...",
+    "iPaid": "Confirmo que paguei",
+    "confirmed": "Pagamento confirmado"
+  },
   "admin": {
     "title": "Admin",
+    "navScoring": "Pontuação",
+    "navRoster": "Participantes",
     "scoringConfig": "Configuração de Pontuação",
     "pointsCorrectResult": "Resultado correto (pts)",
     "pointsExactBonus": "Bônus placar exato (pts)",
@@ -86,6 +95,27 @@
     "rescoring": "Repontuando...",
     "rescored": "{count} apostas repontuadas.",
     "rescoreError": "Falha na repontuação. Tente novamente.",
-    "notAdmin": "Você não tem permissão para visualizar esta página."
+    "notAdmin": "Você não tem permissão para visualizar esta página.",
+    "registrationLock": "Bloqueio de Inscrição",
+    "lockStatusLocked": "Bloqueado",
+    "lockStatusOpen": "Aberto",
+    "lockDateTime": "Data e hora do bloqueio",
+    "setLock": "Definir bloqueio",
+    "lockNow": "Bloquear agora",
+    "removeLock": "Remover bloqueio",
+    "lockSaved": "Bloqueio atualizado.",
+    "lockError": "Não foi possível atualizar o bloqueio. Tente novamente.",
+    "rosterEmpty": "Nenhum usuário encontrado.",
+    "rosterName": "Nome",
+    "rosterSelfConfirmed": "Auto-confirmado",
+    "rosterPaymentStatus": "Pagamento",
+    "rosterActions": "Ações",
+    "confirmPayment": "Confirmar",
+    "revertPayment": "Reverter",
+    "paymentStatus": {
+      "pending": "Pendente",
+      "confirmed": "Confirmado",
+      "rejected": "Recusado"
+    }
   }
 }
