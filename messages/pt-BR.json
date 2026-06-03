@@ -40,8 +40,34 @@
       "final": "Final"
     }
   },
-  "leaderboard": { "title": "Classificação", "points": "Pontos" },
-  "nav": { "fixtures": "Jogos", "leaderboard": "Classificação" },
+  "leaderboard": {
+    "title": "Classificação",
+    "points": "Pontos",
+    "rank": "#",
+    "exactHits": "Exatos",
+    "correctResults": "Resultados",
+    "noEntries": "Nenhum jogador ainda.",
+    "you": "(você)"
+  },
+  "outrights": {
+    "title": "Apostas Fixas",
+    "champion": "Campeão",
+    "topScorer": "Artilheiro",
+    "pickTeam": "Selecione um time…",
+    "pickPlayer": "Buscar jogador…",
+    "yourPick": "Sua aposta",
+    "noPick": "Sem aposta ainda",
+    "save": "Salvar",
+    "saving": "Salvando…",
+    "saved": "Salvo!",
+    "errorLocked": "Apostas fixas estão encerradas.",
+    "errorSave": "Não foi possível salvar. Tente novamente.",
+    "locked": "Encerrado",
+    "open": "Aberto",
+    "noPlayers": "Nenhum jogador carregado — aguarde a próxima sincronização.",
+    "noTeams": "Nenhum time carregado."
+  },
+  "nav": { "fixtures": "Jogos", "leaderboard": "Classificação", "outrights": "Apostas Fixas" },
   "payment": { "iPaid": "Confirmo que paguei", "confirmed": "Pagamento confirmado" },
   "admin": {
     "title": "Admin",

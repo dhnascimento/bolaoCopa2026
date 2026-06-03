@@ -40,8 +40,34 @@
       "final": "Final"
     }
   },
-  "leaderboard": { "title": "Leaderboard", "points": "Points" },
-  "nav": { "fixtures": "Fixtures", "leaderboard": "Leaderboard" },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "points": "Points",
+    "rank": "#",
+    "exactHits": "Exact",
+    "correctResults": "Results",
+    "noEntries": "No entries yet.",
+    "you": "(you)"
+  },
+  "outrights": {
+    "title": "Outrights",
+    "champion": "Champion",
+    "topScorer": "Top Scorer",
+    "pickTeam": "Select a team…",
+    "pickPlayer": "Search players…",
+    "yourPick": "Your pick",
+    "noPick": "No pick yet",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved!",
+    "errorLocked": "Outright bets are closed.",
+    "errorSave": "Could not save. Please try again.",
+    "locked": "Closed",
+    "open": "Open",
+    "noPlayers": "No players loaded yet — check back after the next data sync.",
+    "noTeams": "No teams loaded yet."
+  },
+  "nav": { "fixtures": "Fixtures", "leaderboard": "Leaderboard", "outrights": "Outrights" },
   "payment": { "iPaid": "I confirm I paid", "confirmed": "Payment confirmed" },
   "admin": {
     "title": "Admin",

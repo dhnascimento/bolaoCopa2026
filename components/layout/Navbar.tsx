@@ -30,17 +30,29 @@ export default async function Navbar({ locale }: { locale: string }) {
           {t('common.appName')}
         </a>
 
-        <nav className="flex flex-1 gap-4">
+        <nav className="flex flex-1 gap-4 overflow-x-auto">
           <a
             href={`/${locale}/fixtures`}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors shrink-0"
           >
             {t('nav.fixtures')}
+          </a>
+          <a
+            href={`/${locale}/outrights`}
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors shrink-0"
+          >
+            {t('nav.outrights')}
+          </a>
+          <a
+            href={`/${locale}/leaderboard`}
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors shrink-0"
+          >
+            {t('nav.leaderboard')}
           </a>
           {isAdmin && (
             <a
               href={`/${locale}/admin/scoring`}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors shrink-0"
             >
               {t('admin.title')}
             </a>

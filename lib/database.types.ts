@@ -385,6 +385,23 @@ export type Database = {
           updated_at: string
         }
       }
+      place_outright_bet: {
+        Args: {
+          p_bet_type: string
+          p_predicted_team_id?: number | null
+          p_predicted_player_id?: number | null
+        }
+        Returns: {
+          id: number
+          user_id: string
+          bet_type: string
+          predicted_team_id: number | null
+          predicted_player_id: number | null
+          points_awarded: number
+          created_at: string
+          updated_at: string
+        }
+      }
       registration_locked: { Args: never; Returns: boolean }
     }
     Enums: {
