@@ -343,15 +343,6 @@ redirect_uri = ""
 # skip_nonce_check required for local dev with a real Google OAuth app
 skip_nonce_check = true
 
-[auth.external.azure]
-enabled = true
-client_id = "env(SUPABASE_AUTH_EXTERNAL_AZURE_CLIENT_ID)"
-# DO NOT commit your OAuth provider secret to git. Use environment variable substitution instead:
-secret = "env(SUPABASE_AUTH_EXTERNAL_AZURE_SECRET)"
-redirect_uri = ""
-# Leave url empty to target multi-tenant (personal + work/school accounts)
-url = ""
-
 # Allow Solana wallet holders to sign in to your project via the Sign in with Solana (SIWS, EIP-4361) standard.
 # You can configure "web3" rate limit in the [auth.rate_limit] section and set up [auth.captcha] if self-hosting.
 [auth.web3.solana]

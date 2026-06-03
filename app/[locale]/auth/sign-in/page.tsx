@@ -16,17 +16,6 @@ function GoogleIcon() {
   )
 }
 
-function MicrosoftIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-      <rect x="1" y="1" width="7.5" height="7.5" fill="#F25022"/>
-      <rect x="9.5" y="1" width="7.5" height="7.5" fill="#7FBA00"/>
-      <rect x="1" y="9.5" width="7.5" height="7.5" fill="#00A4EF"/>
-      <rect x="9.5" y="9.5" width="7.5" height="7.5" fill="#FFB900"/>
-    </svg>
-  )
-}
-
 export default function SignInPage() {
   const t = useTranslations('auth')
   const router = useRouter()
@@ -55,10 +44,10 @@ export default function SignInPage() {
     router.refresh()
   }
 
-  const handleOAuth = async (provider: 'google' | 'azure') => {
+  const handleGoogle = async () => {
     const supabase = createClient()
     await supabase.auth.signInWithOAuth({
-      provider,
+      provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/${locale}/auth/callback`,
       },
@@ -70,27 +59,16 @@ export default function SignInPage() {
       <div className="w-full max-w-sm space-y-6">
         <h1 className="text-2xl font-bold text-center">{t('signInTitle')}</h1>
 
-        {/* OAuth providers */}
-        <div className="flex flex-col gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full gap-2"
-            onClick={() => handleOAuth('google')}
-          >
-            <GoogleIcon />
-            {t('continueWithGoogle')}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full gap-2"
-            onClick={() => handleOAuth('azure')}
-          >
-            <MicrosoftIcon />
-            {t('continueWithMicrosoft')}
-          </Button>
-        </div>
+        {/* Google OAuth */}
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full gap-2"
+          onClick={handleGoogle}
+        >
+          <GoogleIcon />
+          {t('continueWithGoogle')}
+        </Button>
 
         {/* Divider */}
         <div className="flex items-center gap-3">

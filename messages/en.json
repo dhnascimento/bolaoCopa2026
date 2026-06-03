@@ -10,8 +10,7 @@
     "signInError": "Incorrect email or password.",
     "signInTitle": "Sign in to your account",
     "orDivider": "or",
-    "continueWithGoogle": "Continue with Google",
-    "continueWithMicrosoft": "Continue with Microsoft"
+    "continueWithGoogle": "Continue with Google"
   },
   "bets": {
     "placeBet": "Save bet",

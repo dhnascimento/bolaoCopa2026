@@ -10,8 +10,7 @@
     "signInError": "Email ou senha incorretos.",
     "signInTitle": "Entre na sua conta",
     "orDivider": "ou",
-    "continueWithGoogle": "Continuar com Google",
-    "continueWithMicrosoft": "Continuar com Microsoft"
+    "continueWithGoogle": "Continuar com Google"
   },
   "bets": {
     "placeBet": "Salvar aposta",
