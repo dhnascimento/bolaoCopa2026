@@ -50,8 +50,8 @@ Read `docs/SPEC.md §10` for the full day-by-day plan. Current status:
 | 1 | Foundation — scaffold, schema, i18n, Supabase linked | ✅ Done (commit 8daa703) |
 | 2 | Data sync — Edge Function + cron → teams, players, fixtures | ✅ Done |
 | 3 | Betting — fixtures list, place/edit match bets, lock RPC | ✅ Done |
-| 4 | Scoring — finished-fixture polling, idempotent points, admin config | ⬜ Next |
-| 5 | Leaderboard & outrights — realtime, pot total, champion/top-scorer bets | ⬜ |
+| 4 | Scoring — finished-fixture polling, idempotent points, admin config | ✅ Done |
+| 5 | Leaderboard & outrights — realtime, pot total, champion/top-scorer bets | ⬜ Next |
 | 6 | Payments & admin — self-confirm, admin roster, registration lock | ⬜ |
 | 7 | Reminders, odds, polish — Resend email, odds display, full i18n pass | ⬜ |
 | 8 | Buffer — test, deploy to Vercel, onboard users | ⬜ |

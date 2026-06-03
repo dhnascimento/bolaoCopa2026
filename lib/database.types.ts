@@ -367,6 +367,7 @@ export type Database = {
     }
     Functions: {
       is_admin: { Args: never; Returns: boolean }
+      score_match_bets: { Args: never; Returns: number }
       place_match_bet: {
         Args: {
           p_fixture_id: number

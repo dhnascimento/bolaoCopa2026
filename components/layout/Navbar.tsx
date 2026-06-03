@@ -12,13 +12,15 @@ export default async function Navbar({ locale }: { locale: string }) {
   } = await supabase.auth.getUser()
 
   let displayName: string | null = null
+  let isAdmin = false
   if (user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('display_name')
+      .select('display_name, is_admin')
       .eq('id', user.id)
       .single()
     displayName = profile?.display_name ?? null
+    isAdmin = profile?.is_admin ?? false
   }
 
   return (
@@ -35,6 +37,14 @@ export default async function Navbar({ locale }: { locale: string }) {
           >
             {t('nav.fixtures')}
           </a>
+          {isAdmin && (
+            <a
+              href={`/${locale}/admin/scoring`}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t('admin.title')}
+            </a>
+          )}
         </nav>
 
         <div className="flex items-center gap-2 shrink-0">

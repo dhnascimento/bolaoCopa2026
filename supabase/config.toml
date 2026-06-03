@@ -386,6 +386,11 @@ allow_dynamic_registration = false
 # var is set via `supabase secrets set CRON_SECRET=<value>`.
 verify_jwt = false
 
+[functions.score-fixtures]
+# Same auth pattern as sync-fixtures: no JWT required; CRON_SECRET enforced
+# inside the function when the env var is set.
+verify_jwt = false
+
 [edge_runtime]
 enabled = true
 # Supported request policies: `oneshot`, `per_worker`.

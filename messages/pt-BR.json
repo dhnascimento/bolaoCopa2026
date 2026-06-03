@@ -42,5 +42,24 @@
   },
   "leaderboard": { "title": "Classificação", "points": "Pontos" },
   "nav": { "fixtures": "Jogos", "leaderboard": "Classificação" },
-  "payment": { "iPaid": "Confirmo que paguei", "confirmed": "Pagamento confirmado" }
+  "payment": { "iPaid": "Confirmo que paguei", "confirmed": "Pagamento confirmado" },
+  "admin": {
+    "title": "Admin",
+    "scoringConfig": "Configuração de Pontuação",
+    "pointsCorrectResult": "Resultado correto (pts)",
+    "pointsExactBonus": "Bônus placar exato (pts)",
+    "pointsChampion": "Campeão correto (pts)",
+    "pointsTopScorer": "Artilheiro correto (pts)",
+    "entryFee": "Taxa de entrada",
+    "currency": "Moeda",
+    "save": "Salvar alterações",
+    "saving": "Salvando...",
+    "saved": "Salvo!",
+    "saveError": "Não foi possível salvar. Tente novamente.",
+    "rescore": "Repontuar todos os jogos",
+    "rescoring": "Repontuando...",
+    "rescored": "{count} apostas repontuadas.",
+    "rescoreError": "Falha na repontuação. Tente novamente.",
+    "notAdmin": "Você não tem permissão para visualizar esta página."
+  }
 }

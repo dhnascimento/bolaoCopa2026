@@ -42,5 +42,24 @@
   },
   "leaderboard": { "title": "Leaderboard", "points": "Points" },
   "nav": { "fixtures": "Fixtures", "leaderboard": "Leaderboard" },
-  "payment": { "iPaid": "I confirm I paid", "confirmed": "Payment confirmed" }
+  "payment": { "iPaid": "I confirm I paid", "confirmed": "Payment confirmed" },
+  "admin": {
+    "title": "Admin",
+    "scoringConfig": "Scoring Config",
+    "pointsCorrectResult": "Correct result (pts)",
+    "pointsExactBonus": "Exact score bonus (pts)",
+    "pointsChampion": "Correct champion (pts)",
+    "pointsTopScorer": "Correct top scorer (pts)",
+    "entryFee": "Entry fee",
+    "currency": "Currency",
+    "save": "Save changes",
+    "saving": "Saving...",
+    "saved": "Saved!",
+    "saveError": "Could not save. Please try again.",
+    "rescore": "Re-score all matches",
+    "rescoring": "Re-scoring...",
+    "rescored": "{count} bets re-scored.",
+    "rescoreError": "Re-score failed. Please try again.",
+    "notAdmin": "You do not have permission to view this page."
+  }
 }
