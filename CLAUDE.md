@@ -53,7 +53,7 @@ Read `docs/SPEC.md §10` for the full day-by-day plan. Current status:
 | 4 | Scoring — finished-fixture polling, idempotent points, admin config | ✅ Done |
 | 5 | Leaderboard & outrights — realtime, pot total, champion/top-scorer bets | ✅ Done |
 | 6 | Payments & admin — self-confirm, admin roster, registration lock | ✅ Done |
-| 7 | Reminders, odds, polish — Resend email, odds display, full i18n pass | ⬜ |
+| 7 | Reminders, odds, polish — Resend email, odds display, full i18n pass | ✅ Done |
 | 8 | Buffer — test, deploy to Vercel, onboard users | ⬜ |
 
 **Target:** users playable by June 8, onboarded by June 10, tournament starts June 11.

@@ -39,6 +39,7 @@ export default async function FixturesPage({
       .from('fixtures')
       .select(
         `id, stage, kickoff_at, lock_at, status, home_score, away_score,
+         odds_home, odds_draw, odds_away,
          home_team:teams!fixtures_home_team_id_fkey(id, name, flag_url),
          away_team:teams!fixtures_away_team_id_fkey(id, name, flag_url)`,
       )

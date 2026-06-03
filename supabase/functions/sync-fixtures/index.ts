@@ -36,6 +36,16 @@ interface ApiSquadItem {
   players: Array<{ id: number; name: string }>
 }
 
+interface ApiOddsItem {
+  fixture: { id: number }
+  bookmakers: Array<{
+    bets: Array<{
+      id: number
+      values: Array<{ value: string; odd: string }>
+    }>
+  }>
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 type FixtureStatus = 'scheduled' | 'live' | 'finished'
@@ -113,6 +123,7 @@ Deno.serve(async (req: Request) => {
     fixtures: 0,
     players: 0,
     players_skipped: false,
+    odds_updated: 0,
     errors: [] as string[],
   }
 
@@ -253,6 +264,74 @@ Deno.serve(async (req: Request) => {
     }
   } catch (e) {
     stats.errors.push(`players sync: ${String(e)}`)
+  }
+
+  // ── 4. Odds (pre-match, up to 5 fixtures per run) ─────────────────────────
+  // Fetch Match Winner (bet type 1) odds for upcoming fixtures that haven't
+  // had odds refreshed in the last 12 hours.  Stays within the free-tier
+  // rate limit by batching at most 5 requests per invocation.
+  const ODDS_PER_RUN = 5
+  const ODDS_STALE_HOURS = 12
+
+  try {
+    const staleThreshold = new Date(
+      Date.now() - ODDS_STALE_HOURS * 60 * 60 * 1000,
+    ).toISOString()
+    const nowIso = new Date().toISOString()
+
+    // Find upcoming, not-yet-finished fixtures with stale or missing odds
+    const { data: fixturesForOdds } = await db
+      .from('fixtures')
+      .select('id, api_fixture_id')
+      .eq('status', 'scheduled')
+      .gt('kickoff_at', nowIso)
+      .or(`odds_fetched_at.is.null,odds_fetched_at.lt.${staleThreshold}`)
+      .order('kickoff_at', { ascending: true })
+      .limit(ODDS_PER_RUN)
+
+    for (const fixture of fixturesForOdds ?? []) {
+      try {
+        const res = await apiFetch<ApiOddsItem[]>(
+          `/odds?fixture=${fixture.api_fixture_id}&bookmaker=8`,
+          apiKey,
+        )
+
+        const item = res.response[0]
+        if (!item) continue
+
+        // bookmaker 8 = Bet365; bet id 1 = Match Winner
+        const matchWinnerBet = item.bookmakers[0]?.bets.find((b) => b.id === 1)
+        if (!matchWinnerBet) continue
+
+        const homeVal = matchWinnerBet.values.find((v) => v.value === 'Home')
+        const drawVal = matchWinnerBet.values.find((v) => v.value === 'Draw')
+        const awayVal = matchWinnerBet.values.find((v) => v.value === 'Away')
+
+        const oddsHome = homeVal ? parseFloat(homeVal.odd) : null
+        const oddsDraw = drawVal ? parseFloat(drawVal.odd) : null
+        const oddsAway = awayVal ? parseFloat(awayVal.odd) : null
+
+        const { error } = await db
+          .from('fixtures')
+          .update({
+            odds_home: oddsHome,
+            odds_draw: oddsDraw,
+            odds_away: oddsAway,
+            odds_fetched_at: new Date().toISOString(),
+          })
+          .eq('id', fixture.id)
+
+        if (error) stats.errors.push(`odds fixture ${fixture.id}: ${error.message}`)
+        else stats.odds_updated++
+      } catch (e) {
+        stats.errors.push(`odds fixture ${fixture.api_fixture_id}: ${String(e)}`)
+      }
+
+      // Small delay to stay within rate limit (reuses the squad delay cadence)
+      await new Promise((r) => setTimeout(r, 6500))
+    }
+  } catch (e) {
+    stats.errors.push(`odds sync: ${String(e)}`)
   }
 
   const status = stats.errors.length > 0 ? 207 : 200

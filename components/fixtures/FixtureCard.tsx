@@ -21,6 +21,9 @@ export type FixtureWithTeams = {
   away_score: number | null
   home_team: Team | null
   away_team: Team | null
+  odds_home: number | null
+  odds_draw: number | null
+  odds_away: number | null
 }
 
 export type UserBet = {
@@ -190,6 +193,23 @@ export function FixtureCard({
           <LockCountdown lockAt={fixture.lock_at} />
         )}
       </div>
+
+      {/* Odds row (pre-match, only when available) */}
+      {fixture.odds_home != null &&
+        fixture.odds_draw != null &&
+        fixture.odds_away != null && (
+          <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+            <span>
+              1 <span className="font-medium text-foreground tabular-nums">{fixture.odds_home.toFixed(2)}</span>
+            </span>
+            <span>
+              X <span className="font-medium text-foreground tabular-nums">{fixture.odds_draw.toFixed(2)}</span>
+            </span>
+            <span>
+              2 <span className="font-medium text-foreground tabular-nums">{fixture.odds_away.toFixed(2)}</span>
+            </span>
+          </div>
+        )}
 
       {/* Save button + error (only when unlocked) */}
       {!isLocked && (
