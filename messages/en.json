@@ -10,7 +10,8 @@
     "signInError": "Incorrect email or password.",
     "signInTitle": "Sign in to your account",
     "orDivider": "or",
-    "continueWithGoogle": "Continue with Google"
+    "continueWithGoogle": "Continue with Google",
+    "registrationClosed": "Registration is closed. Please contact the pool organizer."
   },
   "bets": {
     "placeBet": "Save bet",
@@ -116,6 +117,15 @@
       "pending": "Pending",
       "confirmed": "Confirmed",
       "rejected": "Rejected"
-    }
+    },
+    "inviteTitle": "Invite a participant",
+    "inviteEmail": "Email",
+    "inviteName": "Display name",
+    "inviteLocale": "Language",
+    "inviteSend": "Send invite",
+    "inviteSending": "Sending…",
+    "inviteSent": "Invite sent!",
+    "inviteExists": "This email is already registered.",
+    "inviteError": "Could not send invite. Please try again."
   }
 }

@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -21,10 +21,15 @@ export default function SignInPage() {
   const router = useRouter()
   const { locale } = useParams<{ locale: string }>()
 
+  const searchParams = useSearchParams()
+  const urlError = searchParams.get('error')
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(
+    urlError === 'registration_closed' ? t('registrationClosed') : null,
+  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

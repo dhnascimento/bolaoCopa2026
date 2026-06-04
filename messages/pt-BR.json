@@ -10,7 +10,8 @@
     "signInError": "Email ou senha incorretos.",
     "signInTitle": "Entre na sua conta",
     "orDivider": "ou",
-    "continueWithGoogle": "Continuar com Google"
+    "continueWithGoogle": "Continuar com Google",
+    "registrationClosed": "As inscrições estão encerradas. Entre em contato com o organizador."
   },
   "bets": {
     "placeBet": "Salvar aposta",
@@ -116,6 +117,15 @@
       "pending": "Pendente",
       "confirmed": "Confirmado",
       "rejected": "Recusado"
-    }
+    },
+    "inviteTitle": "Convidar participante",
+    "inviteEmail": "Email",
+    "inviteName": "Nome de exibição",
+    "inviteLocale": "Idioma",
+    "inviteSend": "Enviar convite",
+    "inviteSending": "Enviando…",
+    "inviteSent": "Convite enviado!",
+    "inviteExists": "Este email já está cadastrado.",
+    "inviteError": "Não foi possível enviar o convite. Tente novamente."
   }
 }

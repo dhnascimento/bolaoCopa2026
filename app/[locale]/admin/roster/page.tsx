@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import AdminNav from '@/components/admin/AdminNav'
 import RosterTable, { type RosterProfile } from '@/components/admin/RosterTable'
+import InviteForm from '@/components/admin/InviteForm'
 
 export default async function AdminRosterPage({
   params,
@@ -34,7 +35,10 @@ export default async function AdminRosterPage({
     <main className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">{t('title')}</h1>
       <AdminNav locale={locale} />
-      <RosterTable profiles={(profiles ?? []) as RosterProfile[]} />
+      <div className="space-y-6">
+        <InviteForm />
+        <RosterTable profiles={(profiles ?? []) as RosterProfile[]} />
+      </div>
     </main>
   )
 }
