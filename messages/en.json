@@ -1,5 +1,6 @@
 {
   "common": { "appName": "World Cup 2026 Pool", "potTotal": "Total pot" },
+  "home": { "eyebrow": "FIFA World Cup 2026" },
   "auth": {
     "signIn": "Sign in",
     "signUp": "Sign up",

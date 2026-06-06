@@ -89,8 +89,17 @@ export function FixtureCard({
 
   const currentBet = savedBet
 
+  const [initialMsToLock] = useState(
+    () => new Date(fixture.lock_at).getTime() - new Date().getTime(),
+  )
+  const accentClass = isLocked
+    ? 'border-l-4 border-l-primary'
+    : initialMsToLock < 60 * 60 * 1000
+      ? 'border-l-4 border-l-amber-400 dark:border-l-amber-500'
+      : 'border-l-4 border-l-brand'
+
   return (
-    <div className="rounded-xl border bg-card p-4 flex flex-col gap-3 shadow-sm">
+    <div className={`rounded-xl border bg-card p-4 flex flex-col gap-3 shadow-sm ${accentClass}`}>
       {/* Teams + score row */}
       <div className="flex items-center gap-3">
         {/* Home team */}
@@ -105,7 +114,7 @@ export function FixtureCard({
               className="rounded object-cover"
             />
           )}
-          <span className="text-xs font-medium text-center leading-tight line-clamp-2 w-full">
+          <span className="text-sm font-semibold text-center leading-tight line-clamp-2 w-full">
             {homeTeam?.name ?? <span className="text-muted-foreground">TBD</span>}
           </span>
         </div>
@@ -113,7 +122,7 @@ export function FixtureCard({
         {/* Score inputs or display */}
         <div className="flex items-center gap-1.5 shrink-0">
           {isLocked ? (
-            <div className="flex items-center gap-1 text-xl font-bold tabular-nums">
+            <div className="flex items-center gap-1 text-2xl font-bold tabular-nums">
               {currentBet != null ? (
                 <>
                   <span>{currentBet.home}</span>
@@ -171,7 +180,7 @@ export function FixtureCard({
               className="rounded object-cover"
             />
           )}
-          <span className="text-xs font-medium text-center leading-tight line-clamp-2 w-full">
+          <span className="text-sm font-semibold text-center leading-tight line-clamp-2 w-full">
             {awayTeam?.name ?? <span className="text-muted-foreground">TBD</span>}
           </span>
         </div>

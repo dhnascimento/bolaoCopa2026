@@ -62,12 +62,13 @@ export default function SignInPage() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center p-8">
       <div className="w-full max-w-sm space-y-6">
-        <h1 className="text-2xl font-bold text-center">{t('signInTitle')}</h1>
+        <h1 className="text-center text-3xl">{t('signInTitle')}</h1>
 
         {/* Google OAuth */}
         <Button
           type="button"
           variant="outline"
+          size="lg"
           className="w-full gap-2"
           onClick={handleGoogle}
         >
@@ -113,7 +114,7 @@ export default function SignInPage() {
             />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" disabled={loading} className="w-full">
+          <Button type="submit" size="lg" disabled={loading} className="w-full">
             {loading ? t('signingIn') : t('signIn')}
           </Button>
         </form>

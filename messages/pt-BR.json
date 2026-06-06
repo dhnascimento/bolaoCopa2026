@@ -1,5 +1,6 @@
 {
   "common": { "appName": "Bolão da Copa 2026", "potTotal": "Prêmio total" },
+  "home": { "eyebrow": "Copa do Mundo FIFA 2026" },
   "auth": {
     "signIn": "Entrar",
     "signUp": "Criar conta",

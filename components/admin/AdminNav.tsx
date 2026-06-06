@@ -19,9 +19,9 @@ export default function AdminNav({ locale }: { locale: string }) {
           <a
             key={tab.href}
             href={tab.href}
-            className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+            className={`-mb-px cursor-pointer border-b-2 px-4 py-2 font-heading text-sm font-semibold italic uppercase tracking-wide transition-colors ${
               isActive
-                ? 'border-foreground text-foreground'
+                ? 'border-primary text-foreground'
                 : 'border-transparent text-muted-foreground hover:text-foreground'
             }`}
           >

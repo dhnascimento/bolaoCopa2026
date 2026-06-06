@@ -48,9 +48,11 @@ export default async function LeaderboardPage({
     <main className="mx-auto max-w-2xl px-4 py-8 space-y-6">
       <div className="flex items-start justify-between gap-4">
         <h1 className="text-2xl font-bold">{t('leaderboard.title')}</h1>
-        <div className="text-right shrink-0">
-          <p className="text-xs text-muted-foreground">{t('common.potTotal')}</p>
-          <p className="text-xl font-bold tabular-nums">{potFormatted}</p>
+        <div className="shrink-0 text-right">
+          <p className="eyebrow text-[0.7rem] text-muted-foreground">{t('common.potTotal')}</p>
+          <p className="font-heading text-3xl font-bold italic tabular-nums text-primary">
+            {potFormatted}
+          </p>
         </div>
       </div>
 

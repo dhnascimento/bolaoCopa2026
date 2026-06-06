@@ -64,7 +64,7 @@ export default function InviteForm() {
           <select
             value={locale}
             onChange={(e) => setLocale(e.target.value)}
-            className="rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+            className="cursor-pointer rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="pt-BR">PT-BR</option>
             <option value="en">EN</option>
@@ -82,7 +82,7 @@ export default function InviteForm() {
         </Button>
 
         {status === 'sent' && (
-          <span className="text-sm text-green-600">{t('inviteSent')}</span>
+          <span className="text-sm font-medium text-brand dark:text-sage">{t('inviteSent')}</span>
         )}
         {status === 'exists' && (
           <span className="text-sm text-destructive">{t('inviteExists')}</span>

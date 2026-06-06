@@ -11,6 +11,31 @@ export type LeaderboardRow = {
   correct_results: number | null
 }
 
+function RankBadge({ rank }: { rank: number }) {
+  if (rank === 1) {
+    return (
+      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
+        1
+      </span>
+    )
+  }
+  if (rank === 2) {
+    return (
+      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-500 dark:bg-slate-700/60 dark:text-slate-300">
+        2
+      </span>
+    )
+  }
+  if (rank === 3) {
+    return (
+      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-orange-100 text-xs font-bold text-orange-700 dark:bg-orange-900/40 dark:text-orange-400">
+        3
+      </span>
+    )
+  }
+  return <span className="text-muted-foreground tabular-nums pl-1">{rank}</span>
+}
+
 function assignRanks(rows: LeaderboardRow[]) {
   const ranks: number[] = []
   for (let i = 0; i < rows.length; i++) {
@@ -83,7 +108,7 @@ export default function LeaderboardTable({
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b text-muted-foreground text-xs">
-            <th className="pb-2 pr-3 text-left w-7">{t('rank')}</th>
+            <th className="pb-2 pr-3 text-left w-9">{t('rank')}</th>
             <th className="pb-2 pr-3 text-left">{/* display name — no header */}</th>
             <th className="pb-2 pr-3 text-right font-medium">{t('points')}</th>
             <th className="pb-2 pr-3 text-right hidden sm:table-cell">{t('exactHits')}</th>
@@ -96,10 +121,10 @@ export default function LeaderboardTable({
             return (
               <tr
                 key={row.user_id}
-                className={`border-b last:border-0 ${isMe ? 'bg-muted/40' : ''}`}
+                className={`border-b last:border-0 ${isMe ? 'bg-brand/5 dark:bg-brand/15' : ''}`}
               >
-                <td className="py-3 pr-3 text-muted-foreground tabular-nums w-7">
-                  {row.rank}
+                <td className="py-3 pr-3 w-9">
+                  <RankBadge rank={row.rank} />
                 </td>
                 <td className="py-3 pr-3">
                   <span className={isMe ? 'font-semibold' : ''}>
@@ -111,7 +136,7 @@ export default function LeaderboardTable({
                     </span>
                   )}
                 </td>
-                <td className="py-3 pr-3 text-right tabular-nums font-medium">
+                <td className="py-3 pr-3 text-right tabular-nums font-bold text-brand dark:text-sage">
                   {row.points ?? 0}
                 </td>
                 <td className="py-3 pr-3 text-right tabular-nums text-muted-foreground hidden sm:table-cell">

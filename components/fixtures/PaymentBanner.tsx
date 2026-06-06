@@ -15,10 +15,10 @@ export default function PaymentBanner() {
   }
 
   return (
-    <div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 dark:border-amber-700 dark:bg-amber-950/30">
+    <div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 shadow-sm dark:border-amber-700 dark:bg-amber-950/30">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
+          <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
             {t('bannerTitle')}
           </p>
           <p className="text-sm text-amber-800 dark:text-amber-300">{t('bannerDesc')}</p>

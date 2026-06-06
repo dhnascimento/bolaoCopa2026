@@ -126,17 +126,17 @@ export default function OutrightBetsForm({
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
         isLocked
-          ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-          : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+          ? 'bg-primary/10 text-primary'
+          : 'bg-brand/10 text-brand dark:bg-brand/25 dark:text-sage'
       }`}
     >
-      <span className={`h-1.5 w-1.5 rounded-full ${isLocked ? 'bg-red-500' : 'bg-green-500'}`} />
+      <span className={`h-1.5 w-1.5 rounded-full ${isLocked ? 'bg-primary' : 'bg-brand'}`} />
       {isLocked ? t('locked') : t('open')}
     </span>
   )
 
   const statusText = (status: SaveStatus) => {
-    if (status === 'saved') return <span className="text-sm text-green-600">{t('saved')}</span>
+    if (status === 'saved') return <span className="text-sm font-medium text-brand dark:text-sage">{t('saved')}</span>
     if (status === 'locked') return <span className="text-sm text-destructive">{t('errorLocked')}</span>
     if (status === 'error') return <span className="text-sm text-destructive">{t('errorSave')}</span>
     return null
@@ -170,7 +170,7 @@ export default function OutrightBetsForm({
                   onChange={(e) =>
                     setSelectedTeamId(e.target.value ? Number(e.target.value) : null)
                   }
-                  className="w-full max-w-xs rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full max-w-xs cursor-pointer rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
                 >
                   <option value="">{t('pickTeam')}</option>
                   {teams.map((team) => (
@@ -236,7 +236,7 @@ export default function OutrightBetsForm({
                         <button
                           key={player.id}
                           type="button"
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-muted flex items-center justify-between gap-2"
+                          className="flex w-full cursor-pointer items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
                           onMouseDown={(e) => {
                             // Use mousedown so it fires before the blur/outside-click handler
                             e.preventDefault()

@@ -93,8 +93,10 @@ export default async function FixturesPage({
 
       {stages.map((stage) => (
         <section key={stage}>
-          <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            {stageName(stage)}
+          <h2 className="mb-3 not-italic normal-case tracking-normal">
+            <span className="inline-block rounded-md bg-brand px-3 py-1 font-heading text-xs font-semibold italic uppercase tracking-wide text-brand-foreground">
+              {stageName(stage)}
+            </span>
           </h2>
           <div className="flex flex-col gap-3">
             {grouped.get(stage)!.map((fixture) => (
