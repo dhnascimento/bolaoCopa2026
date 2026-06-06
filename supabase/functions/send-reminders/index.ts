@@ -108,13 +108,24 @@ async function sendEmail(
   subject: string,
   html: string,
 ): Promise<boolean> {
-  const res = await fetch('https://api.resend.com/emails', {
+  // Brevo (formerly Sendinblue) — no domain verification needed, just a
+  // verified sender email address from the Brevo dashboard.
+  const [senderName, senderEmail] = from.includes('<')
+    ? [from.split('<')[0].trim(), from.split('<')[1].replace('>', '').trim()]
+    : ['Bolão Copa 2026', from]
+
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      'api-key': apiKey,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ from, to, subject, html }),
+    body: JSON.stringify({
+      sender: { name: senderName, email: senderEmail },
+      to: [{ email: to }],
+      subject,
+      htmlContent: html,
+    }),
   })
   return res.ok
 }
@@ -137,17 +148,17 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  const resendApiKey = Deno.env.get('RESEND_API_KEY')
-  if (!resendApiKey) {
+  const emailApiKey = Deno.env.get('BREVO_API_KEY')
+  if (!emailApiKey) {
     return new Response(
-      JSON.stringify({ skipped: true, reason: 'RESEND_API_KEY not configured' }),
+      JSON.stringify({ skipped: true, reason: 'BREVO_API_KEY not configured' }),
       { headers: { 'Content-Type': 'application/json' } },
     )
   }
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-  const from = Deno.env.get('RESEND_FROM') ?? 'Bolão Copa 2026 <noreply@resend.dev>'
+  const from = Deno.env.get('EMAIL_FROM') ?? 'Bolão Copa 2026 <noreply@example.com>'
   const appUrl = Deno.env.get('APP_URL') ?? 'http://localhost:3000'
 
   const db = createClient(supabaseUrl, serviceRoleKey, {
@@ -237,7 +248,7 @@ Deno.serve(async (req: Request) => {
       : `[World Cup 2026 Pool] You have ${missing.length} pending bet${missing.length > 1 ? 's' : ''}!`
 
     const html = buildEmailHtml(profile.display_name, missing, appUrl, profile.locale)
-    const sent = await sendEmail(resendApiKey, from, email, subject, html)
+    const sent = await sendEmail(emailApiKey, from, email, subject, html)
 
     if (sent) {
       stats.emails_sent++
