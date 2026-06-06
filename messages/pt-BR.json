@@ -69,7 +69,7 @@
     "noPlayers": "Nenhum jogador carregado — aguarde a próxima sincronização.",
     "noTeams": "Nenhum time carregado."
   },
-  "nav": { "fixtures": "Jogos", "leaderboard": "Classificação", "outrights": "Apostas Fixas" },
+  "nav": { "fixtures": "Jogos", "leaderboard": "Classificação", "outrights": "Apostas Fixas", "language": "Idioma" },
   "payment": {
     "bannerTitle": "Pagamento pendente",
     "bannerDesc": "Confirme que você pagou a taxa de inscrição para participar da pontuação.",
