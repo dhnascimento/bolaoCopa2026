@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Menu, X } from 'lucide-react'
 import { signOut } from '@/lib/auth/actions'
 import { WorldCupMark } from '@/components/brand/WorldCupMark'
+import { LocaleSwitcher } from './LocaleSwitcher'
 
 type NavLink = { href: string; label: string }
 
@@ -70,6 +71,7 @@ export default function NavbarClient({
 
         {/* Desktop auth (right) */}
         <div className="ml-auto hidden items-center gap-3 sm:flex">
+          <LocaleSwitcher isAuthed={isAuthed} />
           {isAuthed ? (
             <>
               {displayName && (
@@ -147,6 +149,9 @@ export default function NavbarClient({
           </nav>
 
           <div className="border-t border-white/15 px-6 py-6">
+            <div className="mb-5">
+              <LocaleSwitcher isAuthed={isAuthed} className="w-fit" />
+            </div>
             {isAuthed ? (
               <>
                 {displayName && (

@@ -69,7 +69,7 @@
     "noPlayers": "No players loaded yet — check back after the next data sync.",
     "noTeams": "No teams loaded yet."
   },
-  "nav": { "fixtures": "Fixtures", "leaderboard": "Leaderboard", "outrights": "Outrights" },
+  "nav": { "fixtures": "Fixtures", "leaderboard": "Leaderboard", "outrights": "Outrights", "language": "Language" },
   "payment": {
     "bannerTitle": "Payment pending",
     "bannerDesc": "Please confirm you've paid the entry fee to participate in scoring.",
