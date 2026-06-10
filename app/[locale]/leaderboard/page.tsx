@@ -3,6 +3,23 @@ import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import LeaderboardTable from '@/components/leaderboard/LeaderboardTable'
 import type { LeaderboardRow } from '@/components/leaderboard/LeaderboardTable'
+import PotTotal from '@/components/leaderboard/PotTotal'
+import { getRate } from '@/lib/currency/rate'
+
+// Currencies offered in the pot toggle, and the locale used to format each.
+const POT_CURRENCIES = ['BRL', 'CAD'] as const
+const CURRENCY_LOCALE: Record<string, string> = { BRL: 'pt-BR', CAD: 'en-CA' }
+
+function formatMoney(amount: number, currency: string): string {
+  try {
+    return new Intl.NumberFormat(CURRENCY_LOCALE[currency] ?? 'en', {
+      style: 'currency',
+      currency,
+    }).format(amount)
+  } catch {
+    return `${currency} ${amount.toFixed(2)}`
+  }
+}
 
 export default async function LeaderboardPage({
   params,
@@ -31,29 +48,32 @@ export default async function LeaderboardPage({
   ])
 
   const entryFee = settings?.entry_fee ?? 0
-  const currency = settings?.currency ?? 'BRL'
+  const nativeCurrency = settings?.currency ?? 'BRL'
   const pot = entryFee * (profileCount ?? 0)
 
-  let potFormatted: string
-  try {
-    potFormatted = new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency,
-    }).format(pot)
-  } catch {
-    potFormatted = `${currency} ${pot.toFixed(2)}`
+  // Always show the native currency; add the other toggle currency when the live
+  // rate is available. Native first so it's the default.
+  const ordered = [
+    nativeCurrency,
+    ...POT_CURRENCIES.filter((c) => c !== nativeCurrency),
+  ]
+  const amounts: Record<string, string> = { [nativeCurrency]: formatMoney(pot, nativeCurrency) }
+  for (const c of ordered) {
+    if (c === nativeCurrency) continue
+    const rate = await getRate(nativeCurrency, c)
+    if (rate != null) amounts[c] = formatMoney(pot * rate, c)
   }
+  const currencies = ordered.filter((c) => c in amounts)
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8 space-y-6">
       <div className="flex items-start justify-between gap-4">
         <h1 className="text-2xl font-bold">{t('leaderboard.title')}</h1>
-        <div className="shrink-0 text-right">
-          <p className="eyebrow text-[0.7rem] text-muted-foreground">{t('common.potTotal')}</p>
-          <p className="font-heading text-3xl font-bold italic tabular-nums text-primary">
-            {potFormatted}
-          </p>
-        </div>
+        <PotTotal
+          amounts={amounts}
+          currencies={currencies}
+          defaultCurrency={nativeCurrency}
+        />
       </div>
 
       <LeaderboardTable

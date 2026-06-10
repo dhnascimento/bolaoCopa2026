@@ -68,7 +68,8 @@
     "exactHits": "Exact",
     "correctResults": "Results",
     "noEntries": "No entries yet.",
-    "you": "(you)"
+    "you": "(you)",
+    "currency": "Currency"
   },
   "outrights": {
     "title": "Outrights",
