@@ -2,9 +2,15 @@
 import { useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
-import { inviteUser } from '@/lib/admin/invite-actions'
+import { inviteUser, createInviteLink } from '@/lib/admin/invite-actions'
 
-type InviteStatus = 'idle' | 'sent' | 'exists' | 'rate_limited' | 'error'
+type InviteStatus =
+  | 'idle'
+  | 'sent'
+  | 'linkReady'
+  | 'exists'
+  | 'rate_limited'
+  | 'error'
 
 export default function InviteForm() {
   const t = useTranslations('admin')
@@ -12,11 +18,34 @@ export default function InviteForm() {
   const [displayName, setDisplayName] = useState('')
   const [locale, setLocale] = useState('pt-BR')
   const [status, setStatus] = useState<InviteStatus>('idle')
+  const [link, setLink] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
   const [isPending, startTransition] = useTransition()
 
-  const handleInvite = () => {
+  const handleCreateLink = () => {
     if (!email || !displayName) return
     setStatus('idle')
+    setLink(null)
+    setCopied(false)
+    startTransition(async () => {
+      const result = await createInviteLink(email.trim(), displayName.trim(), locale)
+      if (result.success) {
+        setLink(result.link)
+        setStatus('linkReady')
+        setEmail('')
+        setDisplayName('')
+      } else if (result.error === 'already_exists') {
+        setStatus('exists')
+      } else {
+        setStatus('error')
+      }
+    })
+  }
+
+  const handleSendEmail = () => {
+    if (!email || !displayName) return
+    setStatus('idle')
+    setLink(null)
     startTransition(async () => {
       const result = await inviteUser(email.trim(), displayName.trim(), locale)
       if (result.success) {
@@ -32,6 +61,17 @@ export default function InviteForm() {
         setStatus('error')
       }
     })
+  }
+
+  const handleCopy = async () => {
+    if (!link) return
+    try {
+      await navigator.clipboard.writeText(link)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2500)
+    } catch {
+      // Clipboard blocked — the admin can still select the text manually.
+    }
   }
 
   return (
@@ -74,13 +114,21 @@ export default function InviteForm() {
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <Button
           size="sm"
-          onClick={handleInvite}
+          onClick={handleCreateLink}
           disabled={!email || !displayName || isPending}
         >
-          {isPending ? t('inviteSending') : t('inviteSend')}
+          {isPending ? t('inviteCreatingLink') : t('inviteCreateLink')}
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleSendEmail}
+          disabled={!email || !displayName || isPending}
+        >
+          {t('inviteSend')}
         </Button>
 
         {status === 'sent' && (
@@ -96,6 +144,24 @@ export default function InviteForm() {
           <span className="text-sm text-destructive">{t('inviteError')}</span>
         )}
       </div>
+
+      {status === 'linkReady' && link && (
+        <div className="space-y-2 rounded-md border bg-muted/30 p-3">
+          <p className="text-sm font-medium text-brand dark:text-sage">{t('inviteLinkReady')}</p>
+          <div className="flex items-center gap-2">
+            <input
+              readOnly
+              value={link}
+              onFocus={(e) => e.currentTarget.select()}
+              className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+            />
+            <Button size="sm" variant="outline" className="shrink-0" onClick={handleCopy}>
+              {copied ? t('inviteCopied') : t('inviteCopy')}
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">{t('inviteLinkHint')}</p>
+        </div>
+      )}
     </section>
   )
 }

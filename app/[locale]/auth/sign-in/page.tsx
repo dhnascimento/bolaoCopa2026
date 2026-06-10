@@ -28,7 +28,11 @@ export default function SignInPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(
-    urlError === 'registration_closed' ? t('registrationClosed') : null,
+    urlError === 'registration_closed'
+      ? t('registrationClosed')
+      : urlError === 'invite_invalid'
+        ? t('inviteInvalid')
+        : null,
   )
 
   const handleSubmit = async (e: React.FormEvent) => {

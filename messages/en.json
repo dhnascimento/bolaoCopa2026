@@ -12,7 +12,8 @@
     "signInTitle": "Sign in to your account",
     "orDivider": "or",
     "continueWithGoogle": "Continue with Google",
-    "registrationClosed": "Registration is closed. Please contact the pool organizer."
+    "registrationClosed": "Registration is closed. Please contact the pool organizer.",
+    "inviteInvalid": "This invite link is invalid or has expired. Ask the organizer for a new one."
   },
   "bets": {
     "placeBet": "Save bet",
@@ -185,6 +186,12 @@
     "inviteSent": "Invite sent!",
     "inviteExists": "This email is already registered.",
     "inviteError": "Could not send invite. Please try again.",
-    "inviteRateLimited": "Email rate limit reached. Wait a few minutes and try again."
+    "inviteRateLimited": "Email rate limit reached. Wait a few minutes and try again.",
+    "inviteCreateLink": "Create invite link",
+    "inviteCreatingLink": "Creating link…",
+    "inviteLinkReady": "Invite link ready — copy and send it (e.g. on WhatsApp):",
+    "inviteCopy": "Copy",
+    "inviteCopied": "Copied!",
+    "inviteLinkHint": "The link signs them in once and expires in about 24 hours."
   }
 }
