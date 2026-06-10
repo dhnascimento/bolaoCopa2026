@@ -49,6 +49,7 @@ export default async function AdminScoringPage({
     points_correct_top_scorer: settings?.points_correct_top_scorer ?? 15,
     entry_fee: settings?.entry_fee ?? 0,
     currency: settings?.currency ?? 'BRL',
+    pool_name: settings?.pool_name ?? '',
   }
 
   return (

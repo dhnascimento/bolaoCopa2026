@@ -62,6 +62,28 @@ export default function ScoringConfigForm({
 
   return (
     <div className="space-y-8">
+      {/* Pool name (per-instance branding) */}
+      <section className="space-y-3">
+        <div className="rounded-lg border p-4 max-w-sm">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium" htmlFor="pool_name">
+              {t('poolName')}
+            </label>
+            <input
+              id="pool_name"
+              type="text"
+              maxLength={60}
+              value={config.pool_name}
+              placeholder={t('poolNamePlaceholder')}
+              onChange={(e) =>
+                setConfig((c) => ({ ...c, pool_name: e.target.value }))
+              }
+              className="rounded-md border bg-background px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-ring"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Scoring point values */}
       <section className="space-y-3">
         <h2 className="text-base font-semibold">{t('scoringConfig')}</h2>

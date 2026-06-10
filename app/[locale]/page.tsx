@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
+import { getPoolName } from '@/lib/settings/pool-name'
 import { WorldCupMark } from '@/components/brand/WorldCupMark'
 
 export default async function HomePage({
@@ -19,6 +20,7 @@ export default async function HomePage({
   }
 
   const t = await getTranslations()
+  const appName = (await getPoolName()) ?? t('common.appName')
 
   return (
     <main className="relative flex flex-1 flex-col items-center justify-center gap-8 overflow-hidden bg-brand-light p-8 text-brand-foreground">
@@ -30,7 +32,7 @@ export default async function HomePage({
         <WorldCupMark className="h-20 w-20 text-brand-foreground drop-shadow-lg" />
         <p className="eyebrow text-sm">{t('home.eyebrow')}</p>
         <h1 className="max-w-2xl text-4xl leading-[0.95] drop-shadow-md sm:text-6xl">
-          {t('common.appName')}
+          {appName}
         </h1>
         <a
           href={`/${locale}/auth/sign-in`}

@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Oswald } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
+import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
+import { getPoolName } from '@/lib/settings/pool-name'
 import Navbar from '@/components/layout/Navbar'
 import '../globals.css'
 
@@ -15,9 +16,20 @@ const oswald = Oswald({
   weight: ['400', '500', '600', '700'],
 })
 
-export const metadata: Metadata = {
-  title: 'Bolão da Copa 2026',
-  description: 'Private betting pool for the FIFA World Cup 2026',
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const [poolName, t] = await Promise.all([
+    getPoolName(),
+    getTranslations({ locale }),
+  ])
+  return {
+    title: poolName ?? t('common.appName'),
+    description: 'Private betting pool for the FIFA World Cup 2026',
+  }
 }
 
 export default async function LocaleLayout({

@@ -140,6 +140,8 @@
     "navScoring": "Scoring",
     "navRoster": "Roster",
     "scoringConfig": "Scoring Config",
+    "poolName": "Pool name",
+    "poolNamePlaceholder": "Leave blank for the default",
     "pointsCorrectResult": "Correct result (pts)",
     "pointsExactBonus": "Exact score bonus (pts)",
     "pointsChampion": "Correct champion (pts)",

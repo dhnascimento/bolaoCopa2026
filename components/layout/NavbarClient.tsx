@@ -10,17 +10,20 @@ type NavLink = { href: string; label: string }
 
 export default function NavbarClient({
   locale,
+  poolName,
   displayName,
   isAuthed,
   isAdmin,
 }: {
   locale: string
+  poolName: string | null
   displayName: string | null
   isAuthed: boolean
   isAdmin: boolean
 }) {
   const t = useTranslations()
   const [open, setOpen] = useState(false)
+  const appName = poolName ?? t('common.appName')
 
   // Lock body scroll while the mobile overlay is open.
   useEffect(() => {
@@ -52,7 +55,7 @@ export default function NavbarClient({
         >
           <WorldCupMark className="h-7 w-7" />
           <span className="font-heading text-base font-bold italic uppercase tracking-tight">
-            {t('common.appName')}
+            {appName}
           </span>
         </a>
 

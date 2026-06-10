@@ -140,6 +140,8 @@
     "navScoring": "Pontuação",
     "navRoster": "Participantes",
     "scoringConfig": "Configuração de Pontuação",
+    "poolName": "Nome do bolão",
+    "poolNamePlaceholder": "Deixe em branco para o padrão",
     "pointsCorrectResult": "Resultado correto (pts)",
     "pointsExactBonus": "Bônus placar exato (pts)",
     "pointsChampion": "Campeão correto (pts)",

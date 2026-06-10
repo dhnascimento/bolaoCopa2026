@@ -301,6 +301,7 @@ export type Database = {
           points_correct_result: number
           points_correct_top_scorer: number
           points_exact_score_bonus: number
+          pool_name: string | null
           registration_locked_at: string | null
           updated_at: string
         }
@@ -315,6 +316,7 @@ export type Database = {
           points_correct_result?: number
           points_correct_top_scorer?: number
           points_exact_score_bonus?: number
+          pool_name?: string | null
           registration_locked_at?: string | null
           updated_at?: string
         }
@@ -329,6 +331,7 @@ export type Database = {
           points_correct_result?: number
           points_correct_top_scorer?: number
           points_exact_score_bonus?: number
+          pool_name?: string | null
           registration_locked_at?: string | null
           updated_at?: string
         }

@@ -10,6 +10,7 @@ export type ScoringConfig = {
   points_correct_top_scorer: number
   entry_fee: number
   currency: string
+  pool_name: string
 }
 
 export type ActionResult =
@@ -38,6 +39,7 @@ export async function updateScoringConfig(config: ScoringConfig): Promise<Action
       points_correct_top_scorer: config.points_correct_top_scorer,
       entry_fee: config.entry_fee,
       currency: config.currency,
+      pool_name: config.pool_name.trim() || null,
       updated_at: new Date().toISOString(),
     })
     .eq('id', 1)

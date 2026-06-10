@@ -1,8 +1,11 @@
 import { createClient } from '@/lib/supabase/server'
+import { getPoolName } from '@/lib/settings/pool-name'
 import NavbarClient from './NavbarClient'
 
 export default async function Navbar({ locale }: { locale: string }) {
   const supabase = await createClient()
+
+  const poolName = await getPoolName()
 
   const {
     data: { user },
@@ -23,6 +26,7 @@ export default async function Navbar({ locale }: { locale: string }) {
   return (
     <NavbarClient
       locale={locale}
+      poolName={poolName}
       displayName={displayName}
       isAuthed={!!user}
       isAdmin={isAdmin}
