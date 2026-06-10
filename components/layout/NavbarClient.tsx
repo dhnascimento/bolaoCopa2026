@@ -36,6 +36,7 @@ export default function NavbarClient({
     { href: `/${locale}/fixtures`, label: t('nav.fixtures') },
     { href: `/${locale}/outrights`, label: t('nav.outrights') },
     { href: `/${locale}/leaderboard`, label: t('nav.leaderboard') },
+    { href: `/${locale}/rules`, label: t('nav.rules') },
     ...(isAdmin
       ? [{ href: `/${locale}/admin/scoring`, label: t('admin.title') }]
       : []),
