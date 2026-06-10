@@ -2,7 +2,7 @@
 import { revalidatePath } from 'next/cache'
 import { headers } from 'next/headers'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from './require-admin'
 
 export type InviteResult =
   | { success: true }
@@ -22,9 +22,8 @@ export async function createInviteLink(
   displayName: string,
   locale: string,
 ): Promise<InviteLinkResult> {
-  const userClient = await createClient()
-  const { data: profile } = await userClient.from('profiles').select('is_admin').single()
-  if (!profile?.is_admin) return { success: false, error: 'unauthorized' }
+  const adminId = await requireAdmin()
+  if (!adminId) return { success: false, error: 'unauthorized' }
 
   const admin = createAdminClient()
 
@@ -64,9 +63,8 @@ export async function inviteUser(
   displayName: string,
   locale: string,
 ): Promise<InviteResult> {
-  const userClient = await createClient()
-  const { data: profile } = await userClient.from('profiles').select('is_admin').single()
-  if (!profile?.is_admin) return { success: false, error: 'unauthorized' }
+  const adminId = await requireAdmin()
+  if (!adminId) return { success: false, error: 'unauthorized' }
 
   const admin = createAdminClient()
 

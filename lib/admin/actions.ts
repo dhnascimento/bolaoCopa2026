@@ -1,7 +1,7 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from './require-admin'
 
 export type ScoringConfig = {
   points_correct_result: number
@@ -18,16 +18,8 @@ export type ActionResult =
   | { success: false; error: string }
 
 export async function updateScoringConfig(config: ScoringConfig): Promise<ActionResult> {
-  // Verify caller is an admin via their own session.
-  const userClient = await createClient()
-  const { data: profile } = await userClient
-    .from('profiles')
-    .select('is_admin')
-    .single()
-
-  if (!profile?.is_admin) {
-    return { success: false, error: 'unauthorized' }
-  }
+  const adminId = await requireAdmin()
+  if (!adminId) return { success: false, error: 'unauthorized' }
 
   const admin = createAdminClient()
   const { error } = await admin
@@ -52,9 +44,8 @@ export async function setPaymentStatus(
   userId: string,
   status: 'unpaid' | 'confirmed',
 ): Promise<ActionResult> {
-  const userClient = await createClient()
-  const { data: profile } = await userClient.from('profiles').select('is_admin').single()
-  if (!profile?.is_admin) return { success: false, error: 'unauthorized' }
+  const adminId = await requireAdmin()
+  if (!adminId) return { success: false, error: 'unauthorized' }
 
   const admin = createAdminClient()
   const { error } = await admin
@@ -68,9 +59,8 @@ export async function setPaymentStatus(
 }
 
 export async function setRegistrationLock(lockedAt: string | null): Promise<ActionResult> {
-  const userClient = await createClient()
-  const { data: profile } = await userClient.from('profiles').select('is_admin').single()
-  if (!profile?.is_admin) return { success: false, error: 'unauthorized' }
+  const adminId = await requireAdmin()
+  if (!adminId) return { success: false, error: 'unauthorized' }
 
   const admin = createAdminClient()
   const { error } = await admin
@@ -84,16 +74,8 @@ export async function setRegistrationLock(lockedAt: string | null): Promise<Acti
 }
 
 export async function triggerRescore(): Promise<ActionResult & { count?: number }> {
-  // Verify caller is an admin via their own session.
-  const userClient = await createClient()
-  const { data: profile } = await userClient
-    .from('profiles')
-    .select('is_admin')
-    .single()
-
-  if (!profile?.is_admin) {
-    return { success: false, error: 'unauthorized' }
-  }
+  const adminId = await requireAdmin()
+  if (!adminId) return { success: false, error: 'unauthorized' }
 
   // Call score_match_bets() via service-role client — auth.uid() will be null
   // in the DB session, satisfying the prevent_points_tampering trigger check.
