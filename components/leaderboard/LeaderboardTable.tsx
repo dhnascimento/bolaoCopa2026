@@ -104,52 +104,54 @@ export default function LeaderboardTable({
   const ranked = assignRanks(data)
 
   return (
-    <div className="overflow-x-auto -mx-4 px-4">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b text-muted-foreground text-xs">
-            <th className="pb-2 pr-3 text-left w-9">{t('rank')}</th>
-            <th className="pb-2 pr-3 text-left">{/* display name — no header */}</th>
-            <th className="pb-2 pr-3 text-right font-medium">{t('points')}</th>
-            <th className="pb-2 pr-3 text-right hidden sm:table-cell">{t('exactHits')}</th>
-            <th className="pb-2 text-right hidden sm:table-cell">{t('correctResults')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ranked.map((row) => {
-            const isMe = row.user_id === currentUserId
-            return (
-              <tr
-                key={row.user_id}
-                className={`border-b last:border-0 ${isMe ? 'bg-brand/5 dark:bg-brand/15' : ''}`}
-              >
-                <td className="py-3 pr-3 w-9">
-                  <RankBadge rank={row.rank} />
-                </td>
-                <td className="py-3 pr-3">
-                  <span className={isMe ? 'font-semibold' : ''}>
-                    {row.display_name ?? '—'}
-                  </span>
-                  {isMe && (
-                    <span className="ml-1.5 text-xs text-muted-foreground">
-                      {t('you')}
+    <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b text-muted-foreground text-xs">
+              <th className="w-9 py-3 pl-4 pr-3 text-left sm:pl-6">{t('rank')}</th>
+              <th className="py-3 pr-3 text-left">{/* display name — no header */}</th>
+              <th className="py-3 pr-4 text-right font-medium sm:pr-3">{t('points')}</th>
+              <th className="hidden py-3 pr-3 text-right sm:table-cell">{t('exactHits')}</th>
+              <th className="hidden py-3 pr-4 text-right sm:table-cell sm:pr-6">{t('correctResults')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ranked.map((row) => {
+              const isMe = row.user_id === currentUserId
+              return (
+                <tr
+                  key={row.user_id}
+                  className={`border-b last:border-0 ${isMe ? 'bg-brand/5 dark:bg-brand/15' : ''}`}
+                >
+                  <td className="w-9 py-3 pl-4 pr-3 sm:pl-6">
+                    <RankBadge rank={row.rank} />
+                  </td>
+                  <td className="py-3 pr-3">
+                    <span className={isMe ? 'font-semibold' : ''}>
+                      {row.display_name ?? '—'}
                     </span>
-                  )}
-                </td>
-                <td className="py-3 pr-3 text-right tabular-nums font-bold text-brand dark:text-sage">
-                  {row.points ?? 0}
-                </td>
-                <td className="py-3 pr-3 text-right tabular-nums text-muted-foreground hidden sm:table-cell">
-                  {row.exact_hits ?? 0}
-                </td>
-                <td className="py-3 text-right tabular-nums text-muted-foreground hidden sm:table-cell">
-                  {row.correct_results ?? 0}
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+                    {isMe && (
+                      <span className="ml-1.5 text-xs text-muted-foreground">
+                        {t('you')}
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-3 pr-4 text-right font-bold tabular-nums text-brand dark:text-sage sm:pr-3">
+                    {row.points ?? 0}
+                  </td>
+                  <td className="hidden py-3 pr-3 text-right tabular-nums text-muted-foreground sm:table-cell">
+                    {row.exact_hits ?? 0}
+                  </td>
+                  <td className="hidden py-3 pr-4 text-right tabular-nums text-muted-foreground sm:table-cell sm:pr-6">
+                    {row.correct_results ?? 0}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

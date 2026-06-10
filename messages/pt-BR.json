@@ -25,7 +25,11 @@
     "noBet": "Sem aposta",
     "yourBet": "Sua aposta",
     "errorLocked": "Apostas para este jogo já encerraram.",
-    "errorSave": "Não foi possível salvar. Tente novamente."
+    "errorSave": "Não foi possível salvar. Tente novamente.",
+    "viewPredictions": "Ver todos os palpites",
+    "hidePredictions": "Ocultar palpites",
+    "loadingPredictions": "Carregando palpites…",
+    "noPredictions": "Nenhum palpite registrado."
   },
   "fixtures": {
     "title": "Jogos",
@@ -40,6 +44,21 @@
       "sf": "Semifinais",
       "3rd": "Disputa do 3º Lugar",
       "final": "Final"
+    },
+    "filters": {
+      "upcoming": "Próximos",
+      "past": "Passados",
+      "all": "Todos",
+      "stage": "Fase",
+      "allStages": "Todas as fases",
+      "group": "Grupo",
+      "allGroups": "Todos os grupos",
+      "groupLabel": "Grupo {letter}",
+      "date": "Data",
+      "allDates": "Todas as datas",
+      "pendingOnly": "Apostas pendentes",
+      "clear": "Limpar filtros",
+      "noMatches": "Nenhum jogo corresponde aos filtros."
     }
   },
   "leaderboard": {
@@ -67,9 +86,20 @@
     "locked": "Encerrado",
     "open": "Aberto",
     "noPlayers": "Nenhum jogador carregado — aguarde a próxima sincronização.",
-    "noTeams": "Nenhum time carregado."
+    "noTeams": "Nenhum time carregado.",
+    "allPicks": "Palpites de todos",
+    "noPicks": "Nenhum palpite ainda."
   },
   "nav": { "fixtures": "Jogos", "leaderboard": "Classificação", "outrights": "Apostas Fixas", "language": "Idioma" },
+  "profile": {
+    "title": "Meu perfil",
+    "displayNameLabel": "Nome de exibição",
+    "save": "Salvar",
+    "saving": "Salvando...",
+    "saved": "Salvo!",
+    "errorEmpty": "O nome não pode ficar em branco.",
+    "errorSave": "Não foi possível salvar. Tente novamente."
+  },
   "payment": {
     "bannerTitle": "Pagamento pendente",
     "bannerDesc": "Confirme que você pagou a taxa de inscrição para participar da pontuação.",

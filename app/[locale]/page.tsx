@@ -37,7 +37,6 @@ export default async function HomePage({
           className="mt-2 inline-flex cursor-pointer items-center gap-2 rounded-md bg-primary px-8 py-3 font-heading text-lg font-semibold italic uppercase tracking-wide text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"
         >
           {t('auth.signIn')}
-          <span aria-hidden className="leading-none">→</span>
         </a>
       </div>
     </main>

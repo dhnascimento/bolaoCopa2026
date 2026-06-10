@@ -75,9 +75,12 @@ export default function NavbarClient({
           {isAuthed ? (
             <>
               {displayName && (
-                <span className="text-xs font-semibold uppercase tracking-wide text-brand-foreground/70">
+                <a
+                  href={`/${locale}/profile`}
+                  className="cursor-pointer text-xs font-semibold uppercase tracking-wide text-brand-foreground/70 transition-colors hover:text-brand-foreground"
+                >
                   {displayName}
-                </span>
+                </a>
               )}
               <form action={signOut}>
                 <button
@@ -155,9 +158,13 @@ export default function NavbarClient({
             {isAuthed ? (
               <>
                 {displayName && (
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-brand-foreground/60">
+                  <a
+                    href={`/${locale}/profile`}
+                    onClick={() => setOpen(false)}
+                    className="mb-3 block cursor-pointer font-heading text-lg font-semibold italic uppercase tracking-wide text-brand-foreground/80 transition-colors hover:text-primary"
+                  >
                     {displayName}
-                  </p>
+                  </a>
                 )}
                 <form action={signOut}>
                   <button

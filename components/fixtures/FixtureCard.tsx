@@ -2,6 +2,7 @@
 import { useEffect, useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 import { placeBet } from '@/lib/bets/actions'
+import { createClient } from '@/lib/supabase/client'
 import { LockCountdown } from './LockCountdown'
 import { Button } from '@/components/ui/button'
 
@@ -14,6 +15,7 @@ export type Team = {
 export type FixtureWithTeams = {
   id: number
   stage: string
+  group_label: string | null
   kickoff_at: string
   lock_at: string
   status: string
@@ -32,14 +34,24 @@ export type UserBet = {
   predicted_away: number
 }
 
+type Prediction = {
+  user_id: string
+  predicted_home: number
+  predicted_away: number
+  display_name: string
+}
+
 export function FixtureCard({
   fixture,
   existingBet,
+  currentUserId,
 }: {
   fixture: FixtureWithTeams
   existingBet: UserBet | null
+  currentUserId: string
 }) {
   const tb = useTranslations('bets')
+  const tl = useTranslations('leaderboard')
 
   const [isLocked, setIsLocked] = useState(
     () => new Date() >= new Date(fixture.lock_at),
@@ -57,6 +69,43 @@ export function FixtureCard({
   )
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'error-locked' | 'error'>('idle')
   const [isPending, startTransition] = useTransition()
+
+  // Other participants' predictions — lazy-loaded on first expand. RLS only
+  // returns other users' rows once the fixture has locked, so this is self-
+  // protecting: an unlocked fixture would return just the current user's bet.
+  const [showPredictions, setShowPredictions] = useState(false)
+  const [predictions, setPredictions] = useState<Prediction[] | null>(null)
+  const [loadingPredictions, setLoadingPredictions] = useState(false)
+
+  const togglePredictions = () => {
+    const next = !showPredictions
+    setShowPredictions(next)
+    if (!next || predictions !== null || loadingPredictions) return
+    setLoadingPredictions(true)
+    void (async () => {
+      const supabase = createClient()
+      const { data } = await supabase
+        .from('match_bets')
+        .select('user_id, predicted_home, predicted_away, profiles(display_name)')
+        .eq('fixture_id', fixture.id)
+      const rows: Prediction[] = (data ?? []).map((r) => {
+        const prof = Array.isArray(r.profiles) ? r.profiles[0] : r.profiles
+        return {
+          user_id: r.user_id,
+          predicted_home: r.predicted_home,
+          predicted_away: r.predicted_away,
+          display_name: prof?.display_name ?? '—',
+        }
+      })
+      rows.sort((a, b) => {
+        if (a.user_id === currentUserId) return -1
+        if (b.user_id === currentUserId) return 1
+        return a.display_name.localeCompare(b.display_name)
+      })
+      setPredictions(rows)
+      setLoadingPredictions(false)
+    })()
+  }
 
   useEffect(() => {
     const delay = Math.max(0, new Date(fixture.lock_at).getTime() - Date.now())
@@ -240,6 +289,55 @@ export function FixtureCard({
             <p className="text-xs text-destructive text-center">
               {saveStatus === 'error-locked' ? tb('errorLocked') : tb('errorSave')}
             </p>
+          )}
+        </div>
+      )}
+
+      {/* All participants' predictions — only once the fixture is locked */}
+      {isLocked && (
+        <div className="border-t pt-3">
+          <button
+            type="button"
+            onClick={togglePredictions}
+            aria-expanded={showPredictions}
+            className="cursor-pointer font-heading text-xs font-semibold italic uppercase tracking-wide text-brand transition-colors hover:text-primary dark:text-sage"
+          >
+            {showPredictions ? tb('hidePredictions') : tb('viewPredictions')}
+          </button>
+
+          {showPredictions && (
+            <div className="mt-2 space-y-1">
+              {loadingPredictions && (
+                <p className="text-xs text-muted-foreground">{tb('loadingPredictions')}</p>
+              )}
+              {!loadingPredictions && predictions?.length === 0 && (
+                <p className="text-xs text-muted-foreground">{tb('noPredictions')}</p>
+              )}
+              {!loadingPredictions &&
+                predictions?.map((p) => {
+                  const isMe = p.user_id === currentUserId
+                  return (
+                    <div
+                      key={p.user_id}
+                      className={`flex items-center justify-between gap-2 text-sm ${
+                        isMe ? 'font-semibold text-brand dark:text-sage' : ''
+                      }`}
+                    >
+                      <span className="truncate">
+                        {p.display_name}
+                        {isMe && (
+                          <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+                            {tl('you')}
+                          </span>
+                        )}
+                      </span>
+                      <span className="shrink-0 tabular-nums">
+                        {p.predicted_home}–{p.predicted_away}
+                      </span>
+                    </div>
+                  )
+                })}
+            </div>
           )}
         </div>
       )}

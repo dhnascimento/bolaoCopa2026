@@ -71,6 +71,13 @@ function mapStage(round: string): string {
   return 'group'
 }
 
+// Extract the group letter from a round string like "Group A - 1" → "A".
+// Returns null for non-group rounds (knockout stages have no group).
+function parseGroup(round: string): string | null {
+  const m = round.match(/group\s+([a-l])/i)
+  return m ? m[1].toUpperCase() : null
+}
+
 async function apiFetch<T>(path: string, apiKey: string): Promise<{ response: T }> {
   const res = await fetch(`${API_BASE}${path}`, {
     headers: {
@@ -178,10 +185,12 @@ Deno.serve(async (req: Request) => {
         new Date(kickoffAt).getTime() - 5 * 60 * 1000,
       ).toISOString()
 
+      const stage = mapStage(item.league.round)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const row: Record<string, any> = {
         api_fixture_id: item.fixture.id,
-        stage: mapStage(item.league.round),
+        stage,
+        group_label: stage === 'group' ? parseGroup(item.league.round) : null,
         home_team_id: homeId,
         away_team_id: awayId,
         kickoff_at: kickoffAt,

@@ -25,7 +25,11 @@
     "noBet": "No bet",
     "yourBet": "Your bet",
     "errorLocked": "Betting for this match has closed.",
-    "errorSave": "Could not save. Please try again."
+    "errorSave": "Could not save. Please try again.",
+    "viewPredictions": "See all predictions",
+    "hidePredictions": "Hide predictions",
+    "loadingPredictions": "Loading predictions…",
+    "noPredictions": "No predictions yet."
   },
   "fixtures": {
     "title": "Fixtures",
@@ -40,6 +44,21 @@
       "sf": "Semi-Finals",
       "3rd": "Third Place",
       "final": "Final"
+    },
+    "filters": {
+      "upcoming": "Upcoming",
+      "past": "Past",
+      "all": "All",
+      "stage": "Stage",
+      "allStages": "All stages",
+      "group": "Group",
+      "allGroups": "All groups",
+      "groupLabel": "Group {letter}",
+      "date": "Date",
+      "allDates": "All dates",
+      "pendingOnly": "Pending bets",
+      "clear": "Clear filters",
+      "noMatches": "No games match these filters."
     }
   },
   "leaderboard": {
@@ -67,9 +86,20 @@
     "locked": "Closed",
     "open": "Open",
     "noPlayers": "No players loaded yet — check back after the next data sync.",
-    "noTeams": "No teams loaded yet."
+    "noTeams": "No teams loaded yet.",
+    "allPicks": "Everyone's picks",
+    "noPicks": "No picks yet."
   },
   "nav": { "fixtures": "Fixtures", "leaderboard": "Leaderboard", "outrights": "Outrights", "language": "Language" },
+  "profile": {
+    "title": "My profile",
+    "displayNameLabel": "Display name",
+    "save": "Save",
+    "saving": "Saving...",
+    "saved": "Saved!",
+    "errorEmpty": "Name can't be blank.",
+    "errorSave": "Could not save. Please try again."
+  },
   "payment": {
     "bannerTitle": "Payment pending",
     "bannerDesc": "Please confirm you've paid the entry fee to participate in scoring.",

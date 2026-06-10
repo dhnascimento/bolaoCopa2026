@@ -2,24 +2,11 @@ import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import {
-  FixtureCard,
   type FixtureWithTeams,
   type UserBet,
 } from '@/components/fixtures/FixtureCard'
+import FixturesBrowser from '@/components/fixtures/FixturesBrowser'
 import PaymentBanner from '@/components/fixtures/PaymentBanner'
-
-const STAGE_ORDER: Record<string, number> = {
-  group: 0,
-  r32: 1,
-  r16: 2,
-  qf: 3,
-  sf: 4,
-  '3rd': 5,
-  final: 6,
-}
-
-const STAGE_KEYS = ['group', 'r32', 'r16', 'qf', 'sf', '3rd', 'final'] as const
-type StageKey = (typeof STAGE_KEYS)[number]
 
 export default async function FixturesPage({
   params,
@@ -38,7 +25,7 @@ export default async function FixturesPage({
     supabase
       .from('fixtures')
       .select(
-        `id, stage, kickoff_at, lock_at, status, home_score, away_score,
+        `id, stage, group_label, kickoff_at, lock_at, status, home_score, away_score,
          odds_home, odds_draw, odds_away,
          home_team:teams!fixtures_home_team_id_fkey(id, name, flag_url),
          away_team:teams!fixtures_away_team_id_fkey(id, name, flag_url)`,
@@ -59,56 +46,17 @@ export default async function FixturesPage({
 
   const t = await getTranslations('fixtures')
 
-  const betsMap = new Map(
-    (bets ?? []).map((b) => [b.fixture_id, b as UserBet]),
-  )
-
-  const grouped = new Map<string, FixtureWithTeams[]>()
-  for (const f of fixtures ?? []) {
-    const stage = f.stage
-    if (!grouped.has(stage)) grouped.set(stage, [])
-    grouped.get(stage)!.push(f as unknown as FixtureWithTeams)
-  }
-
-  const stages = Array.from(grouped.keys()).sort(
-    (a, b) => (STAGE_ORDER[a] ?? 99) - (STAGE_ORDER[b] ?? 99),
-  )
-
-  const stageName = (stage: string): string => {
-    if (STAGE_KEYS.includes(stage as StageKey)) {
-      return t(`stages.${stage as StageKey}`)
-    }
-    return stage
-  }
-
   return (
     <div className="mx-auto max-w-2xl px-4 py-6 flex flex-col gap-8">
       <h1 className="text-2xl font-bold">{t('title')}</h1>
 
       {needsPaymentBanner && <PaymentBanner />}
 
-      {stages.length === 0 && (
-        <p className="text-muted-foreground">{t('noFixtures')}</p>
-      )}
-
-      {stages.map((stage) => (
-        <section key={stage}>
-          <h2 className="mb-3 not-italic normal-case tracking-normal">
-            <span className="inline-block rounded-md bg-brand px-3 py-1 font-heading text-xs font-semibold italic uppercase tracking-wide text-brand-foreground">
-              {stageName(stage)}
-            </span>
-          </h2>
-          <div className="flex flex-col gap-3">
-            {grouped.get(stage)!.map((fixture) => (
-              <FixtureCard
-                key={fixture.id}
-                fixture={fixture}
-                existingBet={betsMap.get(fixture.id) ?? null}
-              />
-            ))}
-          </div>
-        </section>
-      ))}
+      <FixturesBrowser
+        fixtures={(fixtures ?? []) as unknown as FixtureWithTeams[]}
+        bets={(bets ?? []) as UserBet[]}
+        currentUserId={user.id}
+      />
     </div>
   )
 }
