@@ -28,17 +28,16 @@ npx supabase db push          # applies every migration 0001 → 0013
 ```
 
 ## 3. Database settings (Supabase → SQL Editor)
-Run once, substituting the new ref and a fresh random secret:
+On hosted Supabase the `postgres` role isn't a superuser, so `ALTER DATABASE … SET`
+fails (`permission denied to set parameter`). Both cron values live in **Supabase Vault**
+instead. Run once, substituting the new ref and a fresh random secret:
 ```sql
--- Point cron at THIS project's Edge Functions
-alter database postgres
-  set app.functions_base_url = 'https://<new-ref>.supabase.co/functions/v1';
-
--- Cron secret, two ways (this codebase uses both): keep them identical
-alter database postgres set app.cron_secret = '<random-32-char-secret>';   -- score/reminders
-select vault.create_secret('<random-32-char-secret>', 'cron_secret');       -- sync-fixtures
+select vault.create_secret('<random-32-char-secret>', 'cron_secret');
+select vault.create_secret(
+  'https://<new-ref>.supabase.co/functions/v1', 'functions_base_url');
 ```
 > Use the **same** secret value for the `CRON_SECRET` Edge Function secret in step 4.
+> To change a value later, use `vault.update_secret('<name>', '<new-value>')`.
 
 ## 4. Edge Functions (secrets + deploy)
 ```bash
@@ -103,8 +102,8 @@ should show A–L with 6 each.
 | Item | Where | Notes |
 |---|---|---|
 | Migrations applied | `db push` | all of 0001–0013 |
-| `app.functions_base_url` | SQL editor | this project's function URL |
-| `app.cron_secret` + Vault `cron_secret` | SQL editor | same value as `CRON_SECRET` |
+| Vault `functions_base_url` | SQL editor | this project's function URL |
+| Vault `cron_secret` | SQL editor | same value as `CRON_SECRET` |
 | `CRON_SECRET`, `API_FOOTBALL_KEY` | `supabase secrets set` | Edge Function secrets |
 | Functions deployed | `functions deploy` | sync-fixtures, score-fixtures |
 | Auth Site URL + redirect allowlist | dashboard | new domain + localhost |
@@ -119,6 +118,7 @@ should show A–L with 6 each.
   then `db push`, for every instance.
 - **API-Football quota** is per project/key — each instance consumes its own daily quota.
 
-## Optional: also set `app.functions_base_url` on the original project
-Not required (it falls back to the original URL when unset), but for symmetry you can run the
-`alter database postgres set app.functions_base_url = …` on the existing project too.
+## Optional: also set `functions_base_url` on the original project
+Not required (it falls back to the original URL when the Vault entry is absent), but for
+symmetry you can run `select vault.create_secret('https://<orig-ref>.supabase.co/functions/v1',
+'functions_base_url');` on the existing project too.
