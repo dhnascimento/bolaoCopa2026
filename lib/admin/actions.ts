@@ -48,7 +48,7 @@ export async function updateScoringConfig(config: ScoringConfig): Promise<Action
 
 export async function setPaymentStatus(
   userId: string,
-  status: 'pending' | 'confirmed' | 'rejected',
+  status: 'unpaid' | 'confirmed',
 ): Promise<ActionResult> {
   const userClient = await createClient()
   const { data: profile } = await userClient.from('profiles').select('is_admin').single()

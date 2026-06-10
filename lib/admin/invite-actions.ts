@@ -25,12 +25,21 @@ export async function inviteUser(
   )
   if (alreadyExists) return { success: false, error: 'already_exists' }
 
-  // Send invite email via Supabase Auth (magic-link invite)
+  // Send invite email via Supabase Auth (magic-link invite).
+  // NOTE: the built-in email sender is capped at ~2 emails/hour on hosted
+  // Supabase; raising it requires custom SMTP. We surface that case explicitly.
   const { error } = await admin.auth.admin.inviteUserByEmail(email, {
     data: { display_name: displayName, locale },
   })
 
-  if (error) return { success: false, error: error.message }
+  if (error) {
+    console.error('[inviteUser] invite failed', error)
+    const isRateLimited =
+      error.status === 429 ||
+      error.code === 'over_email_send_rate_limit' ||
+      /rate limit/i.test(error.message)
+    return { success: false, error: isRateLimited ? 'rate_limited' : error.message }
+  }
 
   revalidatePath('/', 'layout')
   return { success: true }
