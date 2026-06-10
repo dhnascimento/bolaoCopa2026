@@ -291,6 +291,8 @@ export type Database = {
       }
       settings: {
         Row: {
+          actual_champion_team_id: number | null
+          actual_top_scorer_player_id: number | null
           currency: string
           entry_fee: number
           id: number
@@ -306,6 +308,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          actual_champion_team_id?: number | null
+          actual_top_scorer_player_id?: number | null
           currency?: string
           entry_fee?: number
           id?: number
@@ -321,6 +325,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          actual_champion_team_id?: number | null
+          actual_top_scorer_player_id?: number | null
           currency?: string
           entry_fee?: number
           id?: number
@@ -374,6 +380,7 @@ export type Database = {
     Functions: {
       is_admin: { Args: never; Returns: boolean }
       score_match_bets: { Args: never; Returns: number }
+      score_outright_bets: { Args: never; Returns: number }
       place_match_bet: {
         Args: {
           p_fixture_id: number

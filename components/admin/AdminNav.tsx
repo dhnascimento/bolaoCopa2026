@@ -8,6 +8,7 @@ export default function AdminNav({ locale }: { locale: string }) {
 
   const tabs = [
     { href: `/${locale}/admin/scoring`, label: t('navScoring') },
+    { href: `/${locale}/admin/results`, label: t('navResults') },
     { href: `/${locale}/admin/roster`, label: t('navRoster') },
   ]
 

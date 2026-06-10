@@ -85,3 +85,90 @@ export async function triggerRescore(): Promise<ActionResult & { count?: number 
   if (error) return { success: false, error: error.message }
   return { success: true, count: data ?? 0 }
 }
+
+// Manually record a match's final 90-minute result (used when the automatic
+// API-Football sync isn't available), then re-score match bets idempotently.
+export async function setMatchResult(
+  fixtureId: number,
+  home: number,
+  away: number,
+): Promise<ActionResult & { count?: number }> {
+  const adminId = await requireAdmin()
+  if (!adminId) return { success: false, error: 'unauthorized' }
+  if (!Number.isInteger(home) || !Number.isInteger(away) || home < 0 || away < 0) {
+    return { success: false, error: 'invalid' }
+  }
+
+  const admin = createAdminClient()
+  const { error } = await admin
+    .from('fixtures')
+    .update({
+      status: 'finished',
+      regulation_home: home,
+      regulation_away: away,
+      home_score: home,
+      away_score: away,
+      finished_at: new Date().toISOString(),
+    })
+    .eq('id', fixtureId)
+  if (error) return { success: false, error: error.message }
+
+  const { data, error: scoreErr } = await admin.rpc('score_match_bets')
+  if (scoreErr) return { success: false, error: scoreErr.message }
+
+  revalidatePath('/', 'layout')
+  return { success: true, count: data ?? 0 }
+}
+
+// Revert a match to "not played" (e.g. a result entered by mistake) and re-score.
+export async function clearMatchResult(fixtureId: number): Promise<ActionResult> {
+  const adminId = await requireAdmin()
+  if (!adminId) return { success: false, error: 'unauthorized' }
+
+  const admin = createAdminClient()
+  const { error } = await admin
+    .from('fixtures')
+    .update({
+      status: 'scheduled',
+      regulation_home: null,
+      regulation_away: null,
+      home_score: null,
+      away_score: null,
+      finished_at: null,
+    })
+    .eq('id', fixtureId)
+  if (error) return { success: false, error: error.message }
+
+  const { error: scoreErr } = await admin.rpc('score_match_bets')
+  if (scoreErr) return { success: false, error: scoreErr.message }
+
+  revalidatePath('/', 'layout')
+  return { success: true }
+}
+
+// Record the actual champion / top scorer (either may be null until decided)
+// and score the outright bets idempotently.
+export async function setOutrightResults(
+  championTeamId: number | null,
+  topScorerPlayerId: number | null,
+): Promise<ActionResult & { count?: number }> {
+  const adminId = await requireAdmin()
+  if (!adminId) return { success: false, error: 'unauthorized' }
+
+  const admin = createAdminClient()
+  const { error } = await admin
+    .from('settings')
+    .update({
+      actual_champion_team_id: championTeamId,
+      actual_top_scorer_player_id: topScorerPlayerId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', 1)
+  if (error) return { success: false, error: error.message }
+
+  const { data, error: scoreErr } = await admin.rpc('score_outright_bets')
+  if (scoreErr) return { success: false, error: scoreErr.message }
+
+  revalidatePath('/', 'layout')
+  return { success: true, count: data ?? 0 }
+}
