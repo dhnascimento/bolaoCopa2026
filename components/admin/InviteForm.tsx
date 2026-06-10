@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { inviteUser } from '@/lib/admin/invite-actions'
 
-type InviteStatus = 'idle' | 'sent' | 'exists' | 'error'
+type InviteStatus = 'idle' | 'sent' | 'exists' | 'rate_limited' | 'error'
 
 export default function InviteForm() {
   const t = useTranslations('admin')
@@ -26,6 +26,8 @@ export default function InviteForm() {
         setTimeout(() => setStatus('idle'), 4000)
       } else if (result.error === 'already_exists') {
         setStatus('exists')
+      } else if (result.error === 'rate_limited') {
+        setStatus('rate_limited')
       } else {
         setStatus('error')
       }
@@ -86,6 +88,9 @@ export default function InviteForm() {
         )}
         {status === 'exists' && (
           <span className="text-sm text-destructive">{t('inviteExists')}</span>
+        )}
+        {status === 'rate_limited' && (
+          <span className="text-sm text-destructive">{t('inviteRateLimited')}</span>
         )}
         {status === 'error' && (
           <span className="text-sm text-destructive">{t('inviteError')}</span>

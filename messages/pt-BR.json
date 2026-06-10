@@ -115,6 +115,7 @@
     "confirmPayment": "Confirmar",
     "revertPayment": "Reverter",
     "paymentStatus": {
+      "unpaid": "Não pago",
       "pending": "Pendente",
       "confirmed": "Confirmado",
       "rejected": "Recusado"
@@ -127,6 +128,7 @@
     "inviteSending": "Enviando…",
     "inviteSent": "Convite enviado!",
     "inviteExists": "Este email já está cadastrado.",
-    "inviteError": "Não foi possível enviar o convite. Tente novamente."
+    "inviteError": "Não foi possível enviar o convite. Tente novamente.",
+    "inviteRateLimited": "Limite de e-mails atingido. Aguarde alguns minutos e tente novamente."
   }
 }

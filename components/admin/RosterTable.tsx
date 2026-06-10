@@ -13,12 +13,10 @@ export type RosterProfile = {
 }
 
 const STATUS_BADGE: Record<string, string> = {
-  pending:
+  unpaid:
     'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
   confirmed:
     'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  rejected:
-    'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
 }
 
 export default function RosterTable({ profiles }: { profiles: RosterProfile[] }) {
@@ -28,7 +26,7 @@ export default function RosterTable({ profiles }: { profiles: RosterProfile[] })
 
   const handleSetStatus = (
     userId: string,
-    status: 'pending' | 'confirmed' | 'rejected',
+    status: 'unpaid' | 'confirmed',
   ) => {
     setPendingUserId(userId)
     startTransition(async () => {
@@ -55,7 +53,7 @@ export default function RosterTable({ profiles }: { profiles: RosterProfile[] })
         <tbody>
           {profiles.map((profile) => {
             const isLoading = pendingUserId === profile.id
-            const status = profile.payment_admin_status as 'pending' | 'confirmed' | 'rejected'
+            const status = profile.payment_admin_status as 'unpaid' | 'confirmed'
 
             return (
               <tr key={profile.id} className="border-b last:border-0 hover:bg-muted/30">
@@ -68,7 +66,7 @@ export default function RosterTable({ profiles }: { profiles: RosterProfile[] })
                 <td className="px-4 py-3">
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      STATUS_BADGE[status] ?? STATUS_BADGE.pending
+                      STATUS_BADGE[status] ?? STATUS_BADGE.unpaid
                     }`}
                   >
                     {t(`paymentStatus.${status}`)}
@@ -90,7 +88,7 @@ export default function RosterTable({ profiles }: { profiles: RosterProfile[] })
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => handleSetStatus(profile.id, 'pending')}
+                        onClick={() => handleSetStatus(profile.id, 'unpaid')}
                         disabled={isLoading}
                       >
                         {t('revertPayment')}
