@@ -395,6 +395,11 @@ verify_jwt = false
 # No JWT required; CRON_SECRET enforced inside the function when set.
 verify_jwt = false
 
+[functions.sync-results-fd]
+# football-data.org results sync. No JWT required; CRON_SECRET enforced inside
+# the function when set. Needs FOOTBALL_DATA_TOKEN as a function secret.
+verify_jwt = false
+
 [edge_runtime]
 enabled = true
 # Supported request policies: `oneshot`, `per_worker`.

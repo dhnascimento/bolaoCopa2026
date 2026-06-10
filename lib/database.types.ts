@@ -19,6 +19,7 @@ export type Database = {
           api_fixture_id: number
           away_score: number | null
           away_team_id: number | null
+          fd_match_id: number | null
           finished_at: string | null
           group_label: string | null
           home_score: number | null
@@ -40,6 +41,7 @@ export type Database = {
           api_fixture_id: number
           away_score?: number | null
           away_team_id?: number | null
+          fd_match_id?: number | null
           finished_at?: string | null
           group_label?: string | null
           home_score?: number | null
@@ -61,6 +63,7 @@ export type Database = {
           api_fixture_id?: number
           away_score?: number | null
           away_team_id?: number | null
+          fd_match_id?: number | null
           finished_at?: string | null
           group_label?: string | null
           home_score?: number | null
