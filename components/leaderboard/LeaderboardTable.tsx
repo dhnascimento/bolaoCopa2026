@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 export type LeaderboardRow = {
   user_id: string | null
   display_name: string | null
+  is_bot: boolean | null
   points: number | null
   exact_hits: number | null
   correct_results: number | null
@@ -84,7 +85,7 @@ export default function LeaderboardTable({
           timer = setTimeout(async () => {
             const { data: fresh } = await supabase
               .from('leaderboard')
-              .select('user_id, display_name, points, exact_hits, correct_results')
+              .select('user_id, display_name, is_bot, points, exact_hits, correct_results')
             if (fresh) setData(fresh as LeaderboardRow[])
           }, 600)
         },
@@ -131,6 +132,11 @@ export default function LeaderboardTable({
                     <span className={isMe ? 'font-semibold' : ''}>
                       {row.display_name ?? '—'}
                     </span>
+                    {row.is_bot && (
+                      <span className="ml-1.5 inline-flex items-center gap-0.5 rounded-full bg-muted px-1.5 py-0.5 text-[0.65rem] font-medium uppercase tracking-wide text-muted-foreground align-middle">
+                        🤖 {t('bot')}
+                      </span>
+                    )}
                     {isMe && (
                       <span className="ml-1.5 text-xs text-muted-foreground">
                         {t('you')}

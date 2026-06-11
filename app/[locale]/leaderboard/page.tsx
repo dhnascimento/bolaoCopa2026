@@ -42,9 +42,10 @@ export default async function LeaderboardPage({
   ] = await Promise.all([
     supabase
       .from('leaderboard')
-      .select('user_id, display_name, points, exact_hits, correct_results'),
+      .select('user_id, display_name, is_bot, points, exact_hits, correct_results'),
     supabase.from('settings').select('entry_fee, currency').single(),
-    supabase.from('profiles').select('*', { count: 'exact', head: true }),
+    // Bots are full participants but don't pay in, so they're excluded from the pot.
+    supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('is_bot', false),
   ])
 
   const entryFee = settings?.entry_fee ?? 0

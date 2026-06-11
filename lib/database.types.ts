@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -250,6 +250,7 @@ export type Database = {
           display_name: string
           id: string
           is_admin: boolean
+          is_bot: boolean
           locale: string
           payment_admin_status: string
           payment_confirmed_by: string | null
@@ -260,6 +261,7 @@ export type Database = {
           display_name: string
           id: string
           is_admin?: boolean
+          is_bot?: boolean
           locale?: string
           payment_admin_status?: string
           payment_confirmed_by?: string | null
@@ -270,6 +272,7 @@ export type Database = {
           display_name?: string
           id?: string
           is_admin?: boolean
+          is_bot?: boolean
           locale?: string
           payment_admin_status?: string
           payment_confirmed_by?: string | null
@@ -344,7 +347,22 @@ export type Database = {
           registration_locked_at?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "settings_actual_champion_team_id_fkey"
+            columns: ["actual_champion_team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settings_actual_top_scorer_player_id_fkey"
+            columns: ["actual_top_scorer_player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       teams: {
         Row: {
@@ -374,6 +392,7 @@ export type Database = {
           correct_results: number | null
           display_name: string | null
           exact_hits: number | null
+          is_bot: boolean | null
           points: number | null
           user_id: string | null
         }
@@ -381,44 +400,60 @@ export type Database = {
       }
     }
     Functions: {
+      invoke_score_fixtures: { Args: never; Returns: undefined }
+      invoke_send_reminders: { Args: never; Returns: undefined }
+      invoke_sync_fixtures: { Args: never; Returns: undefined }
+      invoke_sync_results_fd: { Args: never; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
-      score_match_bets: { Args: never; Returns: number }
-      score_outright_bets: { Args: never; Returns: number }
       place_match_bet: {
         Args: {
           p_fixture_id: number
-          p_predicted_home: number
           p_predicted_away: number
+          p_predicted_home: number
         }
         Returns: {
-          id: number
-          user_id: string
-          fixture_id: number
-          predicted_home: number
-          predicted_away: number
-          points_awarded: number
           created_at: string
+          fixture_id: number
+          id: number
+          points_awarded: number
+          predicted_away: number
+          predicted_home: number
           updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "match_bets"
+          isOneToOne: true
+          isSetofReturn: false
         }
       }
       place_outright_bet: {
         Args: {
           p_bet_type: string
-          p_predicted_team_id?: number | null
-          p_predicted_player_id?: number | null
+          p_predicted_player_id?: number
+          p_predicted_team_id?: number
         }
         Returns: {
-          id: number
-          user_id: string
           bet_type: string
-          predicted_team_id: number | null
-          predicted_player_id: number | null
-          points_awarded: number
           created_at: string
+          id: number
+          points_awarded: number
+          predicted_player_id: number | null
+          predicted_team_id: number | null
           updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "outright_bets"
+          isOneToOne: true
+          isSetofReturn: false
         }
       }
       registration_locked: { Args: never; Returns: boolean }
+      score_match_bets: { Args: never; Returns: number }
+      score_outright_bets: { Args: never; Returns: number }
     }
     Enums: {
       [_ in never]: never
