@@ -6,6 +6,17 @@ import { setRegistrationLock } from '@/lib/admin/actions'
 
 type SaveStatus = 'idle' | 'saved' | 'error'
 
+// A datetime-local input holds a LOCAL wall-clock string with no zone. To
+// pre-fill it from a UTC instant we must shift by the local offset, otherwise
+// the browser renders the raw UTC time as if it were local (the value drifts by
+// the timezone offset on every reload).
+function toLocalInputValue(iso: string): string {
+  const d = new Date(iso)
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16)
+}
+
 export default function RegistrationLockForm({
   currentLockedAt,
   isLocked: initialIsLocked,
@@ -15,9 +26,7 @@ export default function RegistrationLockForm({
 }) {
   const t = useTranslations('admin')
   const [inputValue, setInputValue] = useState(
-    currentLockedAt
-      ? new Date(currentLockedAt).toISOString().slice(0, 16)
-      : '',
+    currentLockedAt ? toLocalInputValue(currentLockedAt) : '',
   )
   const [isLocked, setIsLocked] = useState(initialIsLocked)
   const [status, setStatus] = useState<SaveStatus>('idle')
@@ -30,7 +39,7 @@ export default function RegistrationLockForm({
       const result = await setRegistrationLock(now)
       setStatus(result.success ? 'saved' : 'error')
       if (result.success) {
-        setInputValue(new Date(now).toISOString().slice(0, 16))
+        setInputValue(toLocalInputValue(now))
         setIsLocked(true)
         setTimeout(() => setStatus('idle'), 3000)
       }

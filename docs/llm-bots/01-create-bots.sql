@@ -1,7 +1,7 @@
 -- 01-create-bots.sql — manufacture "LLM bot" participants.
 --
 -- Run ONCE in the Supabase SQL editor (it runs as `postgres`, which bypasses RLS).
--- Re-running is safe: existing bots are skipped (ON CONFLICT DO NOTHING).
+-- Re-running is safe: existing bots are skipped (NOT EXISTS guard per email).
 --
 -- Each bot is a normal auth.users + profiles pair. The handle_new_user trigger
 -- creates the profile from raw_user_meta_data.display_name. Because that trigger
@@ -29,20 +29,26 @@ begin
       -- ('grok@llm.bolao',     'Grok 4'),
     ) as m(email, name)
   loop
-    insert into auth.users (
-      instance_id, id, aud, role, email, encrypted_password,
-      email_confirmed_at, created_at, updated_at,
-      raw_app_meta_data, raw_user_meta_data,
-      confirmation_token, recovery_token, email_change_token_new, email_change
-    ) values (
-      '00000000-0000-0000-0000-000000000000', gen_random_uuid(),
-      'authenticated', 'authenticated', rec.email,
-      crypt('bot-no-login', gen_salt('bf')),   -- junk password; bots never sign in
-      now(), now(), now(),
-      '{"provider":"email","providers":["email"]}',
-      jsonb_build_object('display_name', rec.name, 'locale', 'pt-BR'),
-      '', '', '', ''
-    ) on conflict (email) do nothing;          -- re-runnable; trigger creates the profile
+    -- Skip if already present. We guard with NOT EXISTS rather than ON CONFLICT
+    -- because auth.users' email uniqueness is a PARTIAL unique index
+    -- (… where is_sso_user = false), which Postgres won't accept as an
+    -- ON CONFLICT arbiter — that raises "no unique/exclusion constraint matching".
+    if not exists (select 1 from auth.users where email = rec.email) then
+      insert into auth.users (
+        instance_id, id, aud, role, email, encrypted_password,
+        email_confirmed_at, created_at, updated_at,
+        raw_app_meta_data, raw_user_meta_data,
+        confirmation_token, recovery_token, email_change_token_new, email_change
+      ) values (
+        '00000000-0000-0000-0000-000000000000', gen_random_uuid(),
+        'authenticated', 'authenticated', rec.email,
+        crypt('bot-no-login', gen_salt('bf')),   -- junk password; bots never sign in
+        now(), now(), now(),
+        '{"provider":"email","providers":["email"]}',
+        jsonb_build_object('display_name', rec.name, 'locale', 'pt-BR'),
+        '', '', '', ''
+      );                                         -- trigger creates the matching profile
+    end if;
   end loop;
 
   -- handle_new_user doesn't know about is_bot, so tag the bot-domain users here.

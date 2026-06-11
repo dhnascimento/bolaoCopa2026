@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# per-model LLM prompt files (generated per round from docs/llm-bots/02; not source)
+docs/llm-bots/prompt-*.md
