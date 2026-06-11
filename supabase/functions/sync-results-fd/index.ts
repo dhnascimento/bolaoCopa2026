@@ -23,8 +23,8 @@ interface FdMatch {
   status: string // SCHEDULED | TIMED | IN_PLAY | PAUSED | FINISHED | ...
   stage: string
   group: string | null
-  homeTeam: { id: number; name: string }
-  awayTeam: { id: number; name: string }
+  homeTeam: { id: number | null; name: string | null }
+  awayTeam: { id: number | null; name: string | null }
   score: {
     duration: string // REGULAR | EXTRA_TIME | PENALTY_SHOOTOUT
     fullTime: { home: number | null; away: number | null }
@@ -148,16 +148,30 @@ Deno.serve(async (req: Request) => {
 
   // ── 3. Map + update ──────────────────────────────────────────────────────
   for (const m of matches) {
-    const homeId = teamByName.get(canonical(m.homeTeam.name))
-    const awayId = teamByName.get(canonical(m.awayTeam.name))
+    const homeName = m.homeTeam?.name
+    const awayName = m.awayTeam?.name
 
-    if (!homeId || !awayId) {
-      if (!homeId) unresolved.add(m.homeTeam.name)
-      if (!awayId) unresolved.add(m.awayTeam.name)
+    // Knockout placeholders have null team names until the bracket fills in.
+    if (!homeName || !awayName) {
       stats.unmatched_fd.push({
         date: m.utcDate.slice(0, 10),
-        home: m.homeTeam.name,
-        away: m.awayTeam.name,
+        home: homeName ?? 'TBD',
+        away: awayName ?? 'TBD',
+        stage: m.stage,
+      })
+      continue
+    }
+
+    const homeId = teamByName.get(canonical(homeName))
+    const awayId = teamByName.get(canonical(awayName))
+
+    if (!homeId || !awayId) {
+      if (!homeId) unresolved.add(homeName)
+      if (!awayId) unresolved.add(awayName)
+      stats.unmatched_fd.push({
+        date: m.utcDate.slice(0, 10),
+        home: homeName,
+        away: awayName,
         stage: m.stage,
       })
       continue
