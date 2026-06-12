@@ -42,8 +42,9 @@ Regulation (90-minute) result only. Correct result **3** · exact score bonus **
 - `.claude/agents/reviewer` is a read-only checker — run it after a feature and before a PR.
 - These files are committed so every collaborator's Claude Code inherits the same rules.
 
-## Build progress
-Read `docs/SPEC.md §10` for the full day-by-day plan. Current status:
+## Current status
+
+**The tournament is live.** Group stage began June 11, 2026. The app is deployed and users are active.
 
 | Day | Theme | Status |
 |-----|-------|--------|
@@ -53,9 +54,16 @@ Read `docs/SPEC.md §10` for the full day-by-day plan. Current status:
 | 4 | Scoring — finished-fixture polling, idempotent points, admin config | ✅ Done |
 | 5 | Leaderboard & outrights — realtime, pot total, champion/top-scorer bets | ✅ Done |
 | 6 | Payments & admin — self-confirm, admin roster, registration lock | ✅ Done |
-| 7 | Reminders, odds, polish — Resend email, odds display, full i18n pass | ✅ Done |
+| 7 | Reminders, odds, polish — email reminders, odds display, full i18n pass | ✅ Done |
 | 8 | Buffer — test, deploy to Vercel, onboard users | ✅ Done |
 
-**Target:** users playable by June 8, onboarded by June 10, tournament starts June 11.
+Registration and outright bets closed at first kickoff (2026-06-11). Match bets continue locking per fixture (kickoff − 5 min) throughout the tournament. The tournament runs through 2026-07-19.
+
+## Post-launch notes
+
+- **Scoring cadence:** the `score-fixtures` Edge Function runs every 5 minutes via `pg_cron`. Outright bets (champion/top scorer) require manual admin trigger after the final.
+- **Fixture sync:** knockout fixtures upsert progressively as the bracket resolves — the sync does not assume the full schedule exists up front.
+- **API quota:** API-Football free tier is 100 req/day. The sync job is throttled; do not add ad-hoc calls without checking quota headroom.
+- **Email provider:** Brevo (formerly Sendinblue), not Resend. Set `BREVO_API_KEY` and `EMAIL_FROM` in Supabase secrets.
 
 **One non-obvious constraint from Day 1:** `lock_at` is trigger-computed (not a generated column — Postgres 17 rejects timestamptz arithmetic there). The sync job must write `kickoff_at` only; never write `lock_at` directly.
