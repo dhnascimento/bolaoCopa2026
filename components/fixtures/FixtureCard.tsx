@@ -52,6 +52,7 @@ export function FixtureCard({
 }) {
   const tb = useTranslations('bets')
   const tl = useTranslations('leaderboard')
+  const tf = useTranslations('fixtures')
 
   const [isLocked, setIsLocked] = useState(
     () => new Date() >= new Date(fixture.lock_at),
@@ -149,6 +150,12 @@ export function FixtureCard({
 
   return (
     <div className={`rounded-xl border bg-card p-4 flex flex-col gap-3 shadow-sm ${accentClass}`}>
+      {/* Group label (group-stage fixtures only) */}
+      {fixture.group_label != null && (
+        <div className="text-center text-xs font-medium text-muted-foreground">
+          {tf('filters.groupLabel', { letter: fixture.group_label })}
+        </div>
+      )}
       {/* Teams + score row */}
       <div className="flex items-center gap-3">
         {/* Home team */}

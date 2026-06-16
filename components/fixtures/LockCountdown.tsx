@@ -16,17 +16,24 @@ function formatDuration(ms: number): string {
 export function LockCountdown({ lockAt }: { lockAt: string }) {
   const t = useTranslations('fixtures')
   const lockTime = new Date(lockAt).getTime()
-  const [remaining, setRemaining] = useState(() => Math.max(0, lockTime - Date.now()))
+  // Start null so the server and first client render agree (no Date.now() during
+  // SSR/hydration); the real value is filled in after mount. Avoids a hydration
+  // mismatch on the live countdown text.
+  const [remaining, setRemaining] = useState<number | null>(null)
 
   useEffect(() => {
-    if (remaining <= 0) return
-    const id = setInterval(() => {
-      setRemaining(Math.max(0, lockTime - Date.now()))
-    }, 1000)
-    return () => clearInterval(id)
-  }, [lockTime]) // eslint-disable-line react-hooks/exhaustive-deps
+    const update = () => setRemaining(Math.max(0, lockTime - Date.now()))
+    // Seed via a 0ms timer (a callback, not a synchronous effect-body setState)
+    // so the first value lands right after mount without a hydration mismatch.
+    const seed = setTimeout(update, 0)
+    const id = setInterval(update, 1000)
+    return () => {
+      clearTimeout(seed)
+      clearInterval(id)
+    }
+  }, [lockTime])
 
-  if (remaining <= 0) return null
+  if (remaining === null || remaining <= 0) return null
 
   return (
     <span className="text-xs text-amber-500 font-medium">

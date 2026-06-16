@@ -60,6 +60,11 @@
       "pendingOnly": "Apostas pendentes",
       "clear": "Limpar filtros",
       "noMatches": "Nenhum jogo corresponde aos filtros."
+    },
+    "sort": {
+      "label": "Ordenar",
+      "oldest": "Mais antigos primeiro",
+      "newest": "Mais recentes primeiro"
     }
   },
   "leaderboard": {

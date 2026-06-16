@@ -60,6 +60,11 @@
       "pendingOnly": "Pending bets",
       "clear": "Clear filters",
       "noMatches": "No games match these filters."
+    },
+    "sort": {
+      "label": "Sort",
+      "oldest": "Oldest first",
+      "newest": "Newest first"
     }
   },
   "leaderboard": {

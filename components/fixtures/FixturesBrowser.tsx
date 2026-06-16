@@ -38,6 +38,7 @@ export default function FixturesBrowser({
   const [now] = useState(() => Date.now())
 
   const [view, setView] = useState<View>('upcoming')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [stage, setStage] = useState<'all' | StageKey>('all')
   const [group, setGroup] = useState<'all' | string>('all')
   const [date, setDate] = useState<'all' | string>('all')
@@ -117,15 +118,24 @@ export default function FixturesBrowser({
       return true
     })
 
+    const dir = sortOrder === 'asc' ? 1 : -1
+
     const map = new Map<string, FixtureWithTeams[]>()
     for (const { f } of filtered) {
       if (!map.has(f.stage)) map.set(f.stage, [])
       map.get(f.stage)!.push(f)
     }
+    for (const list of map.values()) {
+      list.sort(
+        (a, b) =>
+          dir *
+          (new Date(a.kickoff_at).getTime() - new Date(b.kickoff_at).getTime()),
+      )
+    }
     return Array.from(map.entries()).sort(
-      ([a], [b]) => (STAGE_ORDER[a] ?? 99) - (STAGE_ORDER[b] ?? 99),
+      ([a], [b]) => dir * ((STAGE_ORDER[a] ?? 99) - (STAGE_ORDER[b] ?? 99)),
     )
-  }, [inView, stage, group, date, pendingOnly, view])
+  }, [inView, stage, group, date, pendingOnly, view, sortOrder])
 
   const filtersActive =
     stage !== 'all' || group !== 'all' || date !== 'all' || pendingOnly
@@ -178,6 +188,31 @@ export default function FixturesBrowser({
 
         {/* Dropdown refinements */}
         <div className="flex flex-wrap items-center gap-2">
+          <div
+            role="group"
+            aria-label={t('sort.label')}
+            className="inline-flex w-fit rounded-md border p-0.5"
+          >
+            {(['asc', 'desc'] as const).map((o) => {
+              const isActive = sortOrder === o
+              return (
+                <button
+                  key={o}
+                  type="button"
+                  aria-pressed={isActive}
+                  onClick={() => setSortOrder(o)}
+                  className={`cursor-pointer rounded px-3 py-1 font-heading text-xs font-semibold italic uppercase tracking-wide transition-colors ${
+                    isActive
+                      ? 'bg-brand text-brand-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {t(o === 'asc' ? 'sort.oldest' : 'sort.newest')}
+                </button>
+              )
+            })}
+          </div>
+
           <select
             aria-label={t('filters.stage')}
             value={stage}
