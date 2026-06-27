@@ -61,6 +61,44 @@ function canonical(name: string): string {
   return ALIASES[n] ?? n
 }
 
+// ── Stage + status mapping (football-data → project codes) ──────────────────
+// Maps a football-data stage string to this project's stage codes (see
+// lib/fixtures/stages.ts). Group stage is handled by the API-Football seed; we
+// only ever insert knockout stages from here.
+function mapStage(stage: string): string {
+  switch (stage) {
+    case 'LAST_32':
+      return 'r32'
+    case 'LAST_16':
+      return 'r16'
+    case 'QUARTER_FINALS':
+      return 'qf'
+    case 'SEMI_FINALS':
+      return 'sf'
+    case 'THIRD_PLACE':
+      return '3rd'
+    case 'FINAL':
+      return 'final'
+    default:
+      return 'group'
+  }
+}
+
+type FixtureStatus = 'scheduled' | 'live' | 'finished'
+
+function mapStatus(status: string): FixtureStatus {
+  if (status === 'IN_PLAY' || status === 'PAUSED') return 'live'
+  if (status === 'FINISHED') return 'finished'
+  return 'scheduled' // SCHEDULED | TIMED | POSTPONED | ...
+}
+
+// Synthetic api_fixture_id for FD-seeded knockout fixtures. The column is a
+// UNIQUE NOT NULL bigint normally holding API-Football ids (≤ ~7 digits). The
+// offset keeps these clearly outside that range and collision-free, and is
+// deterministic so re-runs map to the same row.
+const FD_FIXTURE_ID_OFFSET = 9_000_000_000
+
+
 // ── Handler ─────────────────────────────────────────────────────────────────
 Deno.serve(async (req: Request) => {
   const cronSecret = Deno.env.get('CRON_SECRET')
@@ -90,6 +128,7 @@ Deno.serve(async (req: Request) => {
   const db = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
 
   const stats = {
+    seeded: 0,
     newly_mapped: 0,
     total_mapped: 0,
     updated: 0,
@@ -133,7 +172,14 @@ Deno.serve(async (req: Request) => {
   // Index fixtures by unordered team-id pair (each pair is unique in the group stage).
   const pairKey = (a: number, b: number) => [a, b].sort((x, y) => x - y).join('-')
   const fixtureByPair = new Map<string, { id: number; home: number; away: number; fd: number | null }>()
+  // Existing fd_match_ids — the idempotency key for knockout seeding (a pair can
+  // recur across stages, so we must not key inserts on the team pair alone).
+  const seededFdIds = new Set<number>()
   for (const f of fixtures ?? []) {
+    if (f.fd_match_id != null) {
+      seededFdIds.add(f.fd_match_id as number)
+      stats.total_mapped++
+    }
     if (f.home_team_id == null || f.away_team_id == null) continue
     fixtureByPair.set(pairKey(f.home_team_id as number, f.away_team_id as number), {
       id: f.id as number,
@@ -141,7 +187,6 @@ Deno.serve(async (req: Request) => {
       away: f.away_team_id as number,
       fd: f.fd_match_id as number | null,
     })
-    if (f.fd_match_id != null) stats.total_mapped++
   }
 
   const unresolved = new Set<string>()
@@ -177,16 +222,58 @@ Deno.serve(async (req: Request) => {
       continue
     }
 
-    const fixture = fixtureByPair.get(pairKey(homeId, awayId))
+    let fixture = fixtureByPair.get(pairKey(homeId, awayId))
     if (!fixture) {
-      // No DB fixture for this pair (e.g. knockout matches not seeded yet).
-      stats.unmatched_fd.push({
-        date: m.utcDate.slice(0, 10),
-        home: m.homeTeam.name,
-        away: m.awayTeam.name,
-        stage: m.stage,
-      })
-      continue
+      const stage = mapStage(m.stage)
+
+      // Group fixtures are seeded by API-Football; never duplicate them here.
+      // Already-seeded knockout matches (by fd id) are skipped — their fixture
+      // should resolve via the pair lookup once present.
+      if (stage === 'group' || seededFdIds.has(m.id)) {
+        stats.unmatched_fd.push({
+          date: m.utcDate.slice(0, 10),
+          home: m.homeTeam.name,
+          away: m.awayTeam.name,
+          stage: m.stage,
+        })
+        continue
+      }
+
+      // Seed the knockout fixture so participants can bet it. The
+      // trg_fixtures_lock_at BEFORE trigger recomputes lock_at; we supply a
+      // value only to satisfy the NOT NULL constraint.
+      const kickoffAt = m.utcDate
+      const lockAt = new Date(
+        new Date(kickoffAt).getTime() - 5 * 60 * 1000,
+      ).toISOString()
+
+      const { data: inserted, error: seedErr } = await db
+        .from('fixtures')
+        .insert({
+          api_fixture_id: FD_FIXTURE_ID_OFFSET + m.id,
+          stage,
+          group_label: null,
+          home_team_id: homeId,
+          away_team_id: awayId,
+          kickoff_at: kickoffAt,
+          lock_at: lockAt,
+          status: mapStatus(m.status),
+          fd_match_id: m.id,
+        })
+        .select('id')
+        .single()
+
+      if (seedErr || !inserted) {
+        stats.errors.push(`seed fd ${m.id}: ${seedErr?.message ?? 'no row'}`)
+        continue
+      }
+
+      seededFdIds.add(m.id)
+      fixture = { id: inserted.id as number, home: homeId, away: awayId, fd: m.id }
+      fixtureByPair.set(pairKey(homeId, awayId), fixture)
+      stats.seeded++
+      // Fall through: if this match is already FINISHED, the block below writes
+      // its result in the same pass.
     }
 
     // Persist the fd match id on first sight.
